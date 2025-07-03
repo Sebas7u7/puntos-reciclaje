@@ -44,15 +44,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['actualizar_usuario'])
             $ext = strtolower(pathinfo($nombre_archivo, PATHINFO_EXTENSION));
             $permitidas = ['jpg', 'jpeg', 'png', 'gif'];
             if (in_array($ext, $permitidas)) {
-                $destino = __DIR__ . '/../../img/perfiles_usuario/';
+                $destino = realpath(__DIR__ . '/../../img/perfiles/');
+                if ($destino === false) {
+                    $destino = __DIR__ . '/../../img/perfiles/';
+                } else {
+                    $destino .= '/';
+                }
                 if (!is_dir($destino)) {
                     mkdir($destino, 0777, true);
                 }
                 $nuevo_nombre_archivo = 'usuario_' . $usuario->getIdUsuario() . '_' . time() . '.' . $ext;
                 $ruta_final = $destino . $nuevo_nombre_archivo;
                 if (move_uploaded_file($tmp_name, $ruta_final)) {
-                    $foto_perfil = 'img/perfiles_usuario/' . $nuevo_nombre_archivo;
-                    $foto_subida = true;
+                    $foto_perfil = 'img/perfiles/' . $nuevo_nombre_archivo;
                 } else {
                     $mensaje = "No se pudo guardar la foto de perfil.";
                     $tipo_mensaje = "danger";
@@ -188,6 +192,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['actualizar_usuario'])
         <div class="row justify-content-center">
             <div class="col-md-8 col-lg-7">
                 <div class="update-form-card">
+                    <!-- Foto de perfil destacada -->
+                    <div class="text-center mb-3">
+                        <?php 
+                        $foto = $usuario->getFotoPerfil();
+                        $foto_path = $foto ? realpath(__DIR__ . '/../../' . $foto) : false;
+                        if ($foto && $foto_path && file_exists($foto_path)) : ?>
+                            <img src="/<?php echo htmlspecialchars($foto); ?>" alt="Foto de perfil actual" class="profile-img-preview" style="width:120px;height:120px;object-fit:cover;border-radius:50%;border:4px solid #7ed957;box-shadow:0 2px 8px rgba(0,0,0,0.12);">
+                        <?php else: ?>
+                            <div style="width:120px;height:120px;display:inline-block;border-radius:50%;background:#eee;line-height:120px;font-size:48px;color:#bbb;border:4px solid #7ed957;"> <i class="bi bi-person-circle"></i> </div>
+                        <?php endif; ?>
+                    </div>
                     <h2 class="text-center">Actualizar Mis Datos</h2>
                     <?php if ($mensaje): ?>
                         <div class="alert alert-<?php echo htmlspecialchars($tipo_mensaje); ?> alert-dismissible fade show" role="alert">

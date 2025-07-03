@@ -2,6 +2,7 @@
 require_once (__DIR__ . '/../persistencia/Conexion.php');
 require_once (__DIR__ . '/../persistencia/PublicacionDAO.php');
 require_once (__DIR__ . '/../persistencia/ColaboradorDAO.php');
+require_once (__DIR__ . '/Colaborador.php');
 class Publicacion{
     private $id;
     private $titulo;
@@ -21,6 +22,38 @@ class Publicacion{
         $this->colaborador = $colaborador;
     }
 
+    public function listar(){
+        $colaborador = new Colaborador();
+        $colaboradores = $colaborador -> mapearPorId();
+        $publicaciones = array();
+        $conexion = new Conexion();
+        $conexion->abrirConexion();
+        $publicacionDAO = new PublicacionDAO();
+        $conexion -> ejecutarConsulta($publicacionDAO -> consultarTodos());
+        while($registro = $conexion -> siguienteRegistro()){            
+            $publicacion = new Publicacion($registro[0], $registro[1],$registro[2],$registro[3]
+        ,$registro[4],$registro[5],$colaboradores[$registro[6]]);
+            array_push($publicaciones,$publicacion);
+        }
+        $conexion -> cerrarConexion();
+        return $publicaciones;
+    }
+    public function consultar_por_tipo($tipo){
+        $colaborador = new Colaborador();
+        $colaboradores = $colaborador -> mapearPorId();
+        $publicaciones = array();
+        $conexion = new Conexion();
+        $conexion->abrirConexion();
+        $publicacionDAO = new PublicacionDAO();
+        $conexion -> ejecutarConsulta($publicacionDAO -> consultar_por_tipo($tipo));
+        while($registro = $conexion -> siguienteRegistro()){            
+            $publicacion = new Publicacion($registro[0], $registro[1],$registro[2],$registro[3]
+        ,$registro[4],$registro[5],$colaboradores[$registro[6]]);
+            array_push($publicaciones,$publicacion);
+        }
+        $conexion -> cerrarConexion();
+        return $publicaciones;
+    }
     public function registrar($titulo, $descripcion, $tipo, $fecha_publicacion, $enlace, $colaborador_id){
         $conexion = new Conexion();
         $conexion -> abrirConexion();

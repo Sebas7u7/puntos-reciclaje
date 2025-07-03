@@ -118,6 +118,30 @@ $cuenta = $_SESSION["cuenta"];
                         <i class="bi bi-map"></i> Mapa
                     </a>
                 </li>
+                <!-- Nueva opción: Solicitar Recolección Puerta a Puerta -->
+                <li class="nav-item">
+                    <a class="nav-link" href="/puntos-reciclaje/vista/Usuario/SolicitudRecoleecion/solicitarRecoleccion.php">
+                        <i class="bi bi-truck"></i> Solicitar Recolección
+                    </a>
+                </li>
+                <!-- Nueva opción: Ver Publicaciones -->
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownPublicaciones" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        <i class="bi bi-newspaper"></i> Publicaciones
+                    </a>
+                    <ul class="dropdown-menu" aria-labelledby="navbarDropdownPublicaciones">
+                        <li><a class="dropdown-item" href="/puntos-reciclaje/vista/Usuario/publicacion/publicacionNoticia.php?tipo=campaña"><i class="bi bi-bullhorn"></i> Campañas</a></li>
+                        <li><a class="dropdown-item" href="/puntos-reciclaje/vista/Usuario/publicacion/publicacionNoticia.php?tipo=noticia"><i class="bi bi-megaphone"></i> Noticias</a></li>
+                        <li><a class="dropdown-item" href="/puntos-reciclaje/vista/Usuario/publicacion/publicacionNoticia.php?tipo=evento"><i class="bi bi-calendar-event"></i> Eventos</a></li>
+                        <li><a class="dropdown-item" href="/puntos-reciclaje/vista/Usuario/publicacion/publicacionNoticia.php?tipo=informacion"><i class="bi bi-info-circle"></i> Información</a></li>
+                    </ul>
+                </li>
+                <!-- Nueva opción: Preguntas Frecuentes / Comentarios -->
+                <li class="nav-item">
+                    <a class="nav-link" href="/puntos-reciclaje/vista/Usuario/preguntas/preguntas_frec.php">
+                        <i class="bi bi-question-circle"></i> Preguntas Frecuentes
+                    </a>
+                </li>
             </ul>
 
             <div class="d-flex align-items-center">

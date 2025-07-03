@@ -27,6 +27,7 @@ CREATE TABLE colaborador (
   telefono VARCHAR(20) DEFAULT NULL,
   direccion VARCHAR(200) DEFAULT NULL,
   foto_perfil VARCHAR(255) DEFAULT NULL,
+  servicio_domicilio TINYINT(1) NOT NULL DEFAULT 0, -- Nuevo campo: 0 = No, 1 = Sí
   idCuenta INT(11) NOT NULL,
   PRIMARY KEY (idColaborador),
   KEY fk_Colaborador_Cuenta1_idx (idCuenta),
@@ -123,6 +124,20 @@ CREATE TABLE solicitud_recoleccion (
   CONSTRAINT solicitud_recoleccion_ibfk_1 FOREIGN KEY (Usuario_idUsuario) REFERENCES usuario (idUsuario),
   CONSTRAINT solicitud_recoleccion_ibfk_2 FOREIGN KEY (Residuo_idResiduo) REFERENCES residuo (idResiduo),
   CONSTRAINT solicitud_recoleccion_ibfk_3 FOREIGN KEY (Colaborador_idColaborador) REFERENCES colaborador (idColaborador)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- Tabla comentario para preguntas y respuestas
+CREATE TABLE comentario (
+  idComentario INT(11) NOT NULL AUTO_INCREMENT,
+  contenido TEXT NOT NULL,
+  fecha DATETIME NOT NULL,
+  idUsuario INT(11) NOT NULL,
+  idComentarioPadre INT(11) DEFAULT NULL,
+  PRIMARY KEY (idComentario),
+  KEY fk_Comentario_Usuario_idx (idUsuario),
+  KEY fk_Comentario_Padre_idx (idComentarioPadre),
+  CONSTRAINT comentario_ibfk_1 FOREIGN KEY (idUsuario) REFERENCES usuario (idUsuario),
+  CONSTRAINT comentario_ibfk_2 FOREIGN KEY (idComentarioPadre) REFERENCES comentario (idComentario)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 COMMIT;

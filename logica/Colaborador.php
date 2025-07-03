@@ -12,8 +12,9 @@ class Colaborador{
     private $telefono;
     private $direccion;
     private $foto_perfil;
+    private $servicio_domicilio; // Nuevo campo
 
-    public function __construct($idColaborador = 0, $nombre = "", $servicio_ofrecido = "", $cuenta = null, $telefono = "", $direccion = "", $foto_perfil = ""){
+    public function __construct($idColaborador = 0, $nombre = "", $servicio_ofrecido = "", $cuenta = null, $telefono = "", $direccion = "", $foto_perfil = "", $servicio_domicilio = 0){
         $this->idColaborador = $idColaborador;
         $this->nombre = $nombre;
         $this->servicio_ofrecido = $servicio_ofrecido;
@@ -21,6 +22,7 @@ class Colaborador{
         $this->telefono = $telefono;
         $this->direccion = $direccion;
         $this->foto_perfil = $foto_perfil;
+        $this->servicio_domicilio = $servicio_domicilio;
     }
     public function mapearPorId(){
         $colaboradores = [];
@@ -31,17 +33,26 @@ class Colaborador{
         $colaboradorDAO = new ColaboradorDAO();
         $conexion -> ejecutarConsulta($colaboradorDAO -> consultarTodos());
         while($registro = $conexion -> siguienteRegistro()){            
-            $colaborador = new Colaborador($registro[0], $registro[1],$registro[2],$registro[3],$registro[4],$registro[5],$cuentas[$registro[6]]);
+            $colaborador = new Colaborador(
+                $registro[0], // idColaborador
+                $registro[1], // nombre
+                $registro[2], // servicio_ofrecido
+                $cuentas[$registro[7]], // cuenta (idCuenta)
+                $registro[3], // telefono
+                $registro[4], // direccion
+                $registro[5], // foto_perfil
+                $registro[6]  // servicio_domicilio
+            );
             $colaboradores[$registro[0]] = $colaborador;
         }
         $conexion -> cerrarConexion();
         return $colaboradores;   
     }
-    public function registrar($nombre, $servicio_ofrecido, $idCuenta){
+    public function registrar($nombre, $servicio_ofrecido, $servicio_domicilio, $idCuenta){
         $conexion = new Conexion();
         $conexion->abrirConexion();
         $colaboradorDAO = new ColaboradorDAO();
-        $success = $colaboradorDAO->registrar($conexion, $nombre, $servicio_ofrecido, $idCuenta);
+        $success = $colaboradorDAO->registrar($conexion, $nombre, $servicio_ofrecido, $servicio_domicilio, $idCuenta);
         $conexion->cerrarConexion();
         return $success;
     }
@@ -61,9 +72,15 @@ class Colaborador{
         $this->idColaborador = $datosColaborador['idColaborador'];
         $this->nombre = $datosColaborador['nombre'];
         $this->servicio_ofrecido = $datosColaborador['servicio_ofrecido'];
+        $this->telefono = isset($datosColaborador['telefono']) ? $datosColaborador['telefono'] : "";
+        $this->direccion = isset($datosColaborador['direccion']) ? $datosColaborador['direccion'] : "";
+        $this->foto_perfil = isset($datosColaborador['foto_perfil']) ? $datosColaborador['foto_perfil'] : "";
+        $this->servicio_domicilio = isset($datosColaborador['servicio_domicilio']) ? $datosColaborador['servicio_domicilio'] : 0;
         $this->cuenta = $cuentaObject;
         return true;
     }
+
+    // (Eliminados duplicados: los getters y setters están definidos una sola vez al final de la clase)
 
     /**
      * Actualiza los datos del colaborador y opcionalmente el correo.
@@ -144,19 +161,132 @@ class Colaborador{
     }
 
     // Getters y Setters
-    public function getIdColaborador() { return $this->idColaborador; }
-    public function setIdColaborador($idColaborador) { $this->idColaborador = $idColaborador; }
-    public function getNombre() { return $this->nombre; }
-    public function setNombre($nombre) { $this->nombre = $nombre; }
-    public function getServicioOfrecido() { return $this->servicio_ofrecido; }
-    public function setServicioOfrecido($servicio_ofrecido) { $this->servicio_ofrecido = $servicio_ofrecido; }
-    public function getCuenta() { return $this->cuenta; }
-    public function setCuenta(Cuenta $cuenta) { $this->cuenta = $cuenta; }
-    public function getTelefono() { return $this->telefono; }
-    public function setTelefono($telefono) { $this->telefono = $telefono; }
-    public function getDireccion() { return $this->direccion; }
-    public function setDireccion($direccion) { $this->direccion = $direccion; }
-    public function getFotoPerfil() { return $this->foto_perfil; }
-    public function setFotoPerfil($foto_perfil) { $this->foto_perfil = $foto_perfil; }
+    /**
+     * Obtiene el valor del campo servicio_domicilio.
+     * @return int 1 si ofrece servicio a domicilio, 0 si no.
+     */
+    public function getServicioDomicilio() {
+        return $this->servicio_domicilio;
+    }
+
+    /**
+     * Establece el valor del campo servicio_domicilio.
+     * @param int $servicio_domicilio
+     */
+    public function setServicioDomicilio($servicio_domicilio) {
+        $this->servicio_domicilio = $servicio_domicilio;
+    }
+
+    /**
+     * Obtiene el ID del colaborador.
+     * @return int
+     */
+    public function getIdColaborador() {
+        return $this->idColaborador;
+    }
+
+    /**
+     * Establece el ID del colaborador.
+     * @param int $idColaborador
+     */
+    public function setIdColaborador($idColaborador) {
+        $this->idColaborador = $idColaborador;
+    }
+
+    /**
+     * Obtiene el nombre del colaborador.
+     * @return string
+     */
+    public function getNombre() {
+        return $this->nombre;
+    }
+
+    /**
+     * Establece el nombre del colaborador.
+     * @param string $nombre
+     */
+    public function setNombre($nombre) {
+        $this->nombre = $nombre;
+    }
+
+    /**
+     * Obtiene el servicio ofrecido.
+     * @return string
+     */
+    public function getServicioOfrecido() {
+        return $this->servicio_ofrecido;
+    }
+
+    /**
+     * Establece el servicio ofrecido.
+     * @param string $servicio_ofrecido
+     */
+    public function setServicioOfrecido($servicio_ofrecido) {
+        $this->servicio_ofrecido = $servicio_ofrecido;
+    }
+
+    /**
+     * Obtiene el objeto Cuenta asociado.
+     * @return Cuenta
+     */
+    public function getCuenta() {
+        return $this->cuenta;
+    }
+
+    /**
+     * Establece el objeto Cuenta asociado.
+     * @param Cuenta $cuenta
+     */
+    public function setCuenta($cuenta) {
+        $this->cuenta = $cuenta;
+    }
+
+    /**
+     * Obtiene el teléfono del colaborador.
+     * @return string
+     */
+    public function getTelefono() {
+        return $this->telefono;
+    }
+
+    /**
+     * Establece el teléfono del colaborador.
+     * @param string $telefono
+     */
+    public function setTelefono($telefono) {
+        $this->telefono = $telefono;
+    }
+
+    /**
+     * Obtiene la dirección del colaborador.
+     * @return string
+     */
+    public function getDireccion() {
+        return $this->direccion;
+    }
+
+    /**
+     * Establece la dirección del colaborador.
+     * @param string $direccion
+     */
+    public function setDireccion($direccion) {
+        $this->direccion = $direccion;
+    }
+
+    /**
+     * Obtiene la foto de perfil del colaborador.
+     * @return string
+     */
+    public function getFotoPerfil() {
+        return $this->foto_perfil;
+    }
+
+    /**
+     * Establece la foto de perfil del colaborador.
+     * @param string $foto_perfil
+     */
+    public function setFotoPerfil($foto_perfil) {
+        $this->foto_perfil = $foto_perfil;
+    }
 }
 ?>

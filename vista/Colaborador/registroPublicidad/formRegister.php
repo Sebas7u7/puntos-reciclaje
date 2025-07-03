@@ -44,6 +44,7 @@
                             <option value="campaña">Campaña</option>
                             <option value="noticia">Noticia</option>
                             <option value="evento">Evento</option>
+                            <option value="informacion">Información/recursos</option>
                         </select>
                     </div>
                     

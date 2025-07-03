@@ -1,9 +1,51 @@
 <?php
+
 class ColaboradorDAO{
-    
+    /**
+     * Busca colaboradores que ofrecen servicio a domicilio para un residuo dado (por nombre).
+     * @param string $nombreResiduo
+     * @return array
+     */
+    public function buscarPorResiduo($nombreResiduo) {
+        require_once(__DIR__ . '/Conexion.php');
+        $conexion = new Conexion();
+        $conexion->abrirConexion();
+        $colaboradores = $this->obtenerColaboradoresDomicilioPorResiduo($conexion, $nombreResiduo);
+        $conexion->cerrarConexion();
+        return $colaboradores;
+    }
+
     public function __construct(){
         // Puede estar vacío
     }
+
+    /**
+     * Obtiene los colaboradores que ofrecen servicio a domicilio y aceptan un tipo de residuo.
+     * @param Conexion $conexion
+     * @param string $nombreResiduo (ejemplo: 'electronico')
+     * @return array
+     */
+    public function obtenerColaboradoresDomicilioPorResiduo($conexion, $nombreResiduo) {
+        $sql = "SELECT c.idColaborador, c.nombre, c.servicio_ofrecido, c.telefono, c.direccion, c.foto_perfil, c.servicio_domicilio
+                FROM colaborador c
+                INNER JOIN colaborador_has_residuo chr ON c.idColaborador = chr.Colaborador_idColaborador
+                INNER JOIN residuo r ON chr.Residuo_idResiduo = r.idResiduo
+                WHERE c.servicio_domicilio = 1 AND r.nombre = ?";
+        $stmt = $conexion->prepararConsulta($sql);
+        $colaboradores = [];
+        if ($stmt) {
+            $stmt->bind_param("s", $nombreResiduo);
+            if ($stmt->execute()) {
+                $res = $stmt->get_result();
+                while ($row = $res->fetch_assoc()) {
+                    $colaboradores[] = $row;
+                }
+            }
+            $stmt->close();
+        }
+        return $colaboradores;
+    }
+
     public function consultarTodos() {
         return "SELECT 
             idColaborador,
@@ -12,18 +54,19 @@ class ColaboradorDAO{
             telefono,
             direccion,
             foto_perfil,
+            servicio_domicilio,
             idCuenta
         FROM Colaborador;";
     }
-    public function registrar(Conexion $conexion, $nombre, $servicio_ofrecido, $idCuenta){
-        $sql = "INSERT INTO Colaborador (nombre, servicio_ofrecido, idCuenta) 
-                VALUES (?, ?, ?)";
+    public function registrar(Conexion $conexion, $nombre, $servicio_ofrecido, $servicio_domicilio, $idCuenta){
+        $sql = "INSERT INTO Colaborador (nombre, servicio_ofrecido, servicio_domicilio, idCuenta) 
+                VALUES (?, ?, ?, ?)";
         $stmt = $conexion->prepararConsulta($sql);
         if (!$stmt) {
             error_log("Prepare failed for ColaboradorDAO::registrar.");
             return false;
         }
-        $stmt->bind_param("ssi", $nombre, $servicio_ofrecido, $idCuenta);
+        $stmt->bind_param("ssii", $nombre, $servicio_ofrecido, $servicio_domicilio, $idCuenta);
         if ($stmt->execute()) {
             $stmt->close();
             return true;
@@ -35,7 +78,7 @@ class ColaboradorDAO{
     }
 
     public function consultarCuenta(Conexion $conexion, $idCuenta){
-        $sql = "SELECT idColaborador, nombre, servicio_ofrecido, idCuenta
+        $sql = "SELECT idColaborador, nombre, servicio_ofrecido, telefono, direccion, foto_perfil, servicio_domicilio, idCuenta
                 FROM Colaborador
                 WHERE idCuenta = ?";
         $stmt = $conexion->prepararConsulta($sql);
@@ -87,14 +130,14 @@ class ColaboradorDAO{
         }
     }
 
-    public function actualizarDatosCompletos(Conexion $conexion, $idColaborador, $nombre, $telefono, $direccion, $servicio_ofrecido, $foto_perfil) {
-        $sql = "UPDATE Colaborador SET nombre = ?, telefono = ?, direccion = ?, servicio_ofrecido = ?, foto_perfil = ? WHERE idColaborador = ?";
+    public function actualizarDatosCompletos(Conexion $conexion, $idColaborador, $nombre, $telefono, $direccion, $servicio_ofrecido, $foto_perfil, $servicio_domicilio) {
+        $sql = "UPDATE Colaborador SET nombre = ?, telefono = ?, direccion = ?, servicio_ofrecido = ?, foto_perfil = ?, servicio_domicilio = ? WHERE idColaborador = ?";
         $stmt = $conexion->prepararConsulta($sql);
         if (!$stmt) {
             error_log("Prepare failed for ColaboradorDAO::actualizarDatosCompletos: Error en SQL o conexión.");
             return false;
         }
-        $stmt->bind_param("sssssi", $nombre, $telefono, $direccion, $servicio_ofrecido, $foto_perfil, $idColaborador);
+        $stmt->bind_param("ssssssi", $nombre, $telefono, $direccion, $servicio_ofrecido, $foto_perfil, $servicio_domicilio, $idColaborador);
         $result = $stmt->execute();
         $stmt->close();
         return $result;

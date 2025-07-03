@@ -59,6 +59,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['actualizar_colaborado
         $conexion->abrirConexion();
         $colaboradorDAO = new ColaboradorDAO();
         $foto_guardar = $colaborador->getFotoPerfil();
+        // Nuevo: servicio a domicilio
+        $nuevo_servicio_domicilio = isset($_POST['servicio_domicilio']) ? 1 : 0;
         $actualizado = $colaboradorDAO->actualizarDatosCompletos(
             $conexion,
             $colaborador->getIdColaborador(),
@@ -66,7 +68,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['actualizar_colaborado
             $nuevo_telefono,
             $nueva_direccion,
             $nuevo_servicio_ofrecido,
-            $foto_guardar
+            $foto_guardar,
+            $nuevo_servicio_domicilio
         );
         $conexion->cerrarConexion();
         if ($actualizado) {
@@ -74,6 +77,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['actualizar_colaborado
             $colaborador->setTelefono($nuevo_telefono);
             $colaborador->setDireccion($nueva_direccion);
             $colaborador->setServicioOfrecido($nuevo_servicio_ofrecido);
+            $colaborador->setServicioDomicilio($nuevo_servicio_domicilio);
             $_SESSION["colaborador"] = $colaborador;
             $mensaje_feedback = "Datos actualizados correctamente.";
             $tipo_mensaje_feedback = "success";
@@ -187,6 +191,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['actualizar_colaborado
 <body>
 
   <div class="container text-center mt-4">
+    <!-- Foto de perfil destacada -->
+    <div class="mb-3">
+      <?php if (!empty($colaborador->getFotoPerfil())): ?>
+        <img src="<?php echo htmlspecialchars($colaborador->getFotoPerfil()); ?>" alt="Foto de perfil" style="width:120px;height:120px;object-fit:cover;border-radius:50%;border:4px solid #ccfc7b;box-shadow:0 2px 8px rgba(0,0,0,0.12);">
+      <?php else: ?>
+        <div style="width:120px;height:120px;display:inline-block;border-radius:50%;background:#eee;line-height:120px;font-size:48px;color:#bbb;border:4px solid #ccfc7b;"> <i class="bi bi-person-circle"></i> </div>
+      <?php endif; ?>
+    </div>
     <h1 class="mt-3 header-title">Panel del Colaborador</h1>
     <hr class="mb-4">
   </div>
@@ -256,6 +268,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['actualizar_colaborado
               <?php if (!empty($colaborador->getFotoPerfil())): ?>
                 <img src="<?php echo htmlspecialchars($colaborador->getFotoPerfil()); ?>" alt="Foto actual" style="max-width:100px;max-height:100px;margin-top:10px;">
               <?php endif; ?>
+            </div>
+            <div class="mb-3 form-check">
+              <input type="checkbox" class="form-check-input" id="servicio_domicilio" name="servicio_domicilio" value="1" <?php if ($colaborador->getServicioDomicilio()) echo 'checked'; ?>>
+              <label class="form-check-label" for="servicio_domicilio">¿Ofrece servicio a domicilio?</label>
             </div>
             <div class="d-grid gap-2 mt-4">
               <button type="submit" name="actualizar_colaborador" class="btn btn-custom btn-lg">Guardar Cambios</button>
