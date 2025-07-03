@@ -6,14 +6,17 @@ $punto = new Punto_recoleccion();
 $puntos = $punto -> listar();
 $ubicaciones = [];
 
+
 foreach ($puntos as $temp) {
+    $residuos = $temp->getResiduos();
     $ubicaciones[] = [
         "nombre" => $temp->getNombre(),
         "direcion" => $temp->getDireccion(),
         "lat" => floatval($temp->getLatitud()),
         "lng" => floatval($temp->getLongitud()),
         "estado" => $temp->getEstado(),
-        "colaborador" => $temp->getColaborador()->getNombre()
+        "colaborador" => $temp->getColaborador()->getNombre(),
+        "residuos" => $residuos
     ];
 }
 

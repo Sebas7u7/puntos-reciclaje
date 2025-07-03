@@ -80,6 +80,11 @@
         <div class="row justify-content-center">
             <div class="col-md-9 col-lg-8 col-xl-7">
                 <div class="form-container">
+                    <div class="mb-3 text-end">
+                        <a href="asignar_residuos_punto.php" class="btn btn-outline-success">
+                            <i class="bi bi-plus-circle"></i> Asignar residuos a punto existente
+                        </a>
+                    </div>
                     <?php include (__DIR__ . '/formRegister.php'); ?>
                 </div>
             </div>

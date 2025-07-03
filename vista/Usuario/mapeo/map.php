@@ -31,11 +31,18 @@ L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
 
 // Mostrar todos los puntos en el mapa
 ubicaciones.forEach(function(ubicacion) {
+    let residuosHtml = '';
+    if (ubicacion.residuos && ubicacion.residuos.length > 0) {
+        residuosHtml = '<br><b>Residuos que recibe:</b><ul>' + ubicacion.residuos.map(r => `<li>${r}</li>`).join('') + '</ul>';
+    } else {
+        residuosHtml = '<br><b>Residuos que recibe:</b> No especificado';
+    }
     const contenidoPopup = `
         <strong>${ubicacion.nombre}</strong><br>
         Dirección: ${ubicacion.direcion}<br>
         Estado: ${ubicacion.estado}<br>
         Colaborador: ${ubicacion.colaborador}
+        ${residuosHtml}
     `;
 
     L.marker([ubicacion.lat, ubicacion.lng])

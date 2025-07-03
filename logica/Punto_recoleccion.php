@@ -1,8 +1,25 @@
 <?php
 require_once (__DIR__ . '/../persistencia/Conexion.php');
 require_once (__DIR__ . '/../persistencia/Punto_recoleccionDAO.php');
+require_once (__DIR__ . '/../persistencia/PuntoResiduoDAO.php');
 require_once (__DIR__ . '/Colaborador.php');
+
 class Punto_recoleccion{
+    // ...existing properties...
+
+    // Obtener los residuos que recibe este punto de recolección
+    public function getResiduos() {
+        $conexion = new Conexion();
+        $conexion->abrirConexion();
+        $dao = new PuntoResiduoDAO();
+        $conexion->ejecutarConsulta($dao->obtenerResiduosPorPunto($this->idPunto_Recoleccion));
+        $residuos = array();
+        while ($registro = $conexion->siguienteRegistro()) {
+            $residuos[] = $registro[0];
+        }
+        $conexion->cerrarConexion();
+        return $residuos;
+    }
     private $idPunto_Recoleccion;
     private $nombre;
     private $direccion;

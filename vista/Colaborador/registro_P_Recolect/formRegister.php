@@ -59,6 +59,9 @@
                         </select>
                     </div>
                     
+
+                    <!-- Campo de residuos eliminado. Ahora se asignan en una vista aparte. -->
+
                     <div class="mb-3">
                         <label for="imagen" class="form-label">Imagen del punto (opcional):</label>
                         <input type="file" class="form-control" id="imagen" name="imagen" accept="image/*">
