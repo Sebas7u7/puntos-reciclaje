@@ -32,8 +32,27 @@ if (isset($_POST['asignar_residuos'])) {
 
 $puntoObj = new Punto_recoleccion();
 $puntos = $puntoObj->listar();
-$residuoObj = new Residuo();
-$residuos = $residuoObj->listar();
+
+// Solo mostrar residuos del colaborador actual
+$residuos = [];
+$colaborador = $_SESSION["colaborador"];
+if ($colaborador && method_exists($colaborador, 'getIdColaborador')) {
+    $conexion = new Conexion();
+    $conexion->abrirConexion();
+    require_once(__DIR__ . '/../../../persistencia/ColaboradorDAO.php');
+    $colaboradorDAO = new ColaboradorDAO();
+    $idsResiduos = $colaboradorDAO->obtenerResiduosColaborador($conexion, $colaborador->getIdColaborador());
+    $conexion->cerrarConexion();
+    if (!empty($idsResiduos)) {
+        $residuoObj = new Residuo();
+        $todos = $residuoObj->mapearPorId();
+        foreach ($idsResiduos as $id) {
+            if (isset($todos[$id])) {
+                $residuos[] = $todos[$id];
+            }
+        }
+    }
+}
 
 function residuosDelPunto($idPunto) {
     $conexion = new Conexion();
