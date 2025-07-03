@@ -103,18 +103,23 @@
 
             <!-- Columna derecha: Formulario de login -->
             <div class="col-md-6">
-                
-                    <div class="logo-placeholder"></div>
-                    <?php
-                    if (isset($_SESSION['message'])) {
-                        $tipo = $_SESSION['message_type'] == 'success' ? 'success' : 'danger';
-                        echo '<div class="alert alert-' . $tipo . '">' . $_SESSION['message'] . '</div>';
-                        unset($_SESSION['message']);
-                        unset($_SESSION['message_type']);
-                    }
-                    include(__DIR__ . '/loginForm.php');
-                    ?>
-                
+                <?php
+                // Asegura que la sesión esté iniciada antes de usar $_SESSION
+                if (session_status() == PHP_SESSION_NONE) {
+                    session_start();
+                }
+                ?>
+                <div class="logo-placeholder"></div>
+                <?php
+                if (isset($_SESSION['message'])) {
+                    // Soporta success, danger y warning
+                    $tipo = in_array($_SESSION['message_type'], ['success', 'danger', 'warning']) ? $_SESSION['message_type'] : 'info';
+                    echo '<div class="alert alert-' . $tipo . ' text-center fw-bold">' . $_SESSION['message'] . '</div>';
+                    unset($_SESSION['message']);
+                    unset($_SESSION['message_type']);
+                }
+                include(__DIR__ . '/loginForm.php');
+                ?>
             </div>
         </div>
     </div>
