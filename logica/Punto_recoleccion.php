@@ -1,11 +1,40 @@
+
+
+
 <?php
 require_once (__DIR__ . '/../persistencia/Conexion.php');
 require_once (__DIR__ . '/../persistencia/Punto_recoleccionDAO.php');
 require_once (__DIR__ . '/../persistencia/PuntoResiduoDAO.php');
 require_once (__DIR__ . '/Colaborador.php');
 
-class Punto_recoleccion{
-    // ...existing properties...
+class Punto_recoleccion {
+    private $idPunto_Recoleccion;
+    private $nombre;
+    private $direccion;
+    private $latitud;
+    private $longitud;
+    private $estado;
+    private $colaborador;
+
+    // Buscar puntos que reciben un residuo por nombre exacto
+    public function puntos_por_residuo($nombreResiduo) {
+        $colaborador = new Colaborador();
+        $colaboradores = $colaborador->mapearPorId();
+        $puntos = array();
+        $conexion = new Conexion();
+        $conexion->abrirConexion();
+        $puntoDAO = new Punto_recoleccionDAO();
+        $conexion->ejecutarConsulta($puntoDAO->puntos_por_residuo($nombreResiduo));
+        while ($registro = $conexion->siguienteRegistro()) {
+            $punto = new Punto_recoleccion(
+                $registro[0], $registro[1], $registro[2], $registro[3],
+                $registro[4], $registro[5], $colaboradores[$registro[6]]
+            );
+            array_push($puntos, $punto);
+        }
+        $conexion->cerrarConexion();
+        return $puntos;
+    }
 
     // Obtener los residuos que recibe este punto de recolección
     public function getResiduos() {
@@ -20,13 +49,6 @@ class Punto_recoleccion{
         $conexion->cerrarConexion();
         return $residuos;
     }
-    private $idPunto_Recoleccion;
-    private $nombre;
-    private $direccion;
-    private $latitud;
-    private $longitud;
-    private $estado;
-    private $colaborador;
 
     public function __construct(
         $idPunto_Recoleccion = 0,
@@ -45,50 +67,56 @@ class Punto_recoleccion{
         $this->estado = $estado;
         $this->colaborador = $colaborador;
     }
-    public function listar(){
+
+    public function listar() {
         $colaborador = new Colaborador();
-        $colaboradores = $colaborador -> mapearPorId();
+        $colaboradores = $colaborador->mapearPorId();
         $puntos = array();
         $conexion = new Conexion();
         $conexion->abrirConexion();
-        $puntoDAO = new Punto_recoleccionDAO(); 
-        $conexion -> ejecutarConsulta($puntoDAO -> consultarTodos());
-        while($registro = $conexion -> siguienteRegistro()){            
-            $punto = new Punto_recoleccion($registro[0], $registro[1],$registro[2],$registro[3]
-        ,$registro[4],$registro[5],$colaboradores[$registro[6]]);
-            array_push($puntos,$punto);
+        $puntoDAO = new Punto_recoleccionDAO();
+        $conexion->ejecutarConsulta($puntoDAO->consultarTodos());
+        while ($registro = $conexion->siguienteRegistro()) {
+            $punto = new Punto_recoleccion(
+                $registro[0], $registro[1], $registro[2], $registro[3],
+                $registro[4], $registro[5], $colaboradores[$registro[6]]
+            );
+            array_push($puntos, $punto);
         }
-        $conexion -> cerrarConexion();
+        $conexion->cerrarConexion();
         return $puntos;
     }
+
     public function registrar($nombre, $direccion, $latitud, $longitud, $estado, $colaborador_id) {
         $conexion = new Conexion();
         $conexion->abrirConexion();
-
-        $puntoDAO = new Punto_recoleccionDAO(); 
+        $puntoDAO = new Punto_recoleccionDAO();
         $conexion->ejecutarConsultaDirecta(
             $puntoDAO->registrar($nombre, $direccion, $latitud, $longitud, $estado, $colaborador_id)
         );
-
         $conexion->cerrarConexion();
         return true;
     }
-    public function clasificar_by_categoria($categoria){
+
+    public function clasificar_by_categoria($categoria) {
         $colaborador = new Colaborador();
-        $colaboradores = $colaborador -> mapearPorId();
+        $colaboradores = $colaborador->mapearPorId();
         $puntos = array();
         $conexion = new Conexion();
         $conexion->abrirConexion();
-        $puntoDAO = new Punto_recoleccionDAO(); 
-        $conexion -> ejecutarConsulta($puntoDAO -> clasificar_by_categoria($categoria));
-        while($registro = $conexion -> siguienteRegistro()){            
-            $punto = new Punto_recoleccion($registro[0], $registro[1],$registro[2],$registro[3]
-        ,$registro[4],$registro[5],$colaboradores[$registro[6]]);
-            array_push($puntos,$punto);
+        $puntoDAO = new Punto_recoleccionDAO();
+        $conexion->ejecutarConsulta($puntoDAO->clasificar_by_categoria($categoria));
+        while ($registro = $conexion->siguienteRegistro()) {
+            $punto = new Punto_recoleccion(
+                $registro[0], $registro[1], $registro[2], $registro[3],
+                $registro[4], $registro[5], $colaboradores[$registro[6]]
+            );
+            array_push($puntos, $punto);
         }
-        $conexion -> cerrarConexion();
+        $conexion->cerrarConexion();
         return $puntos;
     }
+
     // Getter & Setter for idPunto_Recoleccion
     public function getIdPuntoRecoleccion() {
         return $this->idPunto_Recoleccion;
@@ -145,4 +173,3 @@ class Punto_recoleccion{
         $this->colaborador = $colaborador;
     }
 }
-?>

@@ -2,6 +2,26 @@
 require_once (__DIR__ . '/../persistencia/Conexion.php');
 require_once (__DIR__ . '/../persistencia/ResiduoDAO.php');
 class Residuo {
+    // ...existing code...
+    // Devuelve un array de categorías únicas de los residuos
+    public function listarCategorias() {
+        $categorias = array();
+        $conexion = new Conexion();
+        $conexion->abrirConexion();
+        $residuoDAO = new ResiduoDAO;
+        $conexion->ejecutarConsulta($residuoDAO->consultarTodos());
+        while (($registro = $conexion->siguienteRegistro())) {
+            if (is_array($registro) && array_key_exists(3, $registro)) {
+                $categoria = $registro[3];
+                if (!in_array($categoria, $categorias) && $categoria !== null && $categoria !== "") {
+                    $categorias[] = $categoria;
+                }
+            }
+        }
+        $conexion->cerrarConexion();
+        sort($categorias);
+        return $categorias;
+    }
     private $id;
     private $nombre;
     private $descripcion;

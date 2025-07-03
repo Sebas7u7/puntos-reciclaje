@@ -57,6 +57,20 @@
     <script src="https://unpkg.com/leaflet-routing-machine/dist/leaflet-routing-machine.min.js"></script>
 
     <script>
+    <?php
+    if (isset($_GET['lat']) && isset($_GET['lng']) && isset($_GET['nombre'])) {
+        $ubicaciones = [[
+            'nombre' => $_GET['nombre'],
+            'direcion' => '',
+            'lat' => floatval($_GET['lat']),
+            'lng' => floatval($_GET['lng']),
+            'estado' => '',
+            'colaborador' => '',
+            'residuos' => []
+        ]];
+        $ubicaciones_json = json_encode($ubicaciones);
+    }
+    ?>
     const ubicaciones = <?php echo $ubicaciones_json; ?>;
 
     const map = L.map('map').setView([4.6519, -74.0966], 12);

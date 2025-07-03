@@ -35,7 +35,7 @@ if (isset($_POST["inicioSesion"])) {
         $usuario = new Usuario();
         $usuario->consultarCuenta($cuenta);
         $_SESSION["usuario"] = $usuario;
-        header("Location: /puntos-reciclaje/vista/Usuario/actualizarDatos.php");
+        header("Location: /puntos-reciclaje/vista/Usuario/indexUsuario.php");
         exit();
     }else{
         $colaborador = new Colaborador();

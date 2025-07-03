@@ -70,15 +70,15 @@ $residuos = $residuo->listar();
 
                 <form method="POST" action="<?= htmlspecialchars($_SERVER['PHP_SELF']) ?>" enctype="multipart/form-data">
                     <div class="mb-3">
-                            <label for="nombreR" class="form-label">Nombre residuo</label>
-                            <input type="text" id="nombreR" name="nombreR" class="form-control"
-                                list="nombreR_list" placeholder="Seleccione o escriba..." autocomplete="off">
-                            <datalist id="nombreR_list">
-                                <?php foreach($residuos as $temp): ?>
+                        <label class="form-label">Buscar por nombre exacto</label>
+                        <input type="text" id="nombreR" name="nombreR" class="form-control" list="nombreR_list" placeholder="Escriba el nombre del residuo..." autocomplete="off">
+                        <datalist id="nombreR_list">
+                            <?php foreach($residuos as $temp): ?>
                                 <option value="<?= htmlspecialchars($temp->getNombre()) ?>"></option>
-                                <?php endforeach; ?>
-                            </datalist>
+                            <?php endforeach; ?>
+                        </datalist>
                     </div>
+                    <!-- Eliminado el filtro por categoría para evitar errores -->
 
                     <div class="d-grid gap-2 mt-4">
                         <button type="submit" name="clasificar_residuo"

@@ -51,9 +51,9 @@
             <table class="table table-bordered mb-0">
                 <thead>
                     <tr>
-                        <th>nombre</th>
-                        <th>descripcion</th>
-                        <th>categoria</th>
+                        <th>Nombre</th>
+                        <th>Descripción</th>
+                        <th>Categoría</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -66,10 +66,48 @@
             </table>
         </div>
     </div>
-    <!-- Botón dentro del mismo contenedor -->
-    <div class="mt-3 text-end">
-        <a class="btn btn-primary" href="/puntos-reciclaje/vista/Usuario/mapeo/puntos_categoria.php?categoria=<?php echo $residuoC->getCategoria(); ?>" target="_blank" role="button">
-            Ver puntos recomendados
-        </a>
+
+    <?php
+    require_once(__DIR__ . '/../../../logica/Punto_recoleccion.php');
+    $puntoObj = new Punto_recoleccion();
+    $puntosRecomendados = $puntoObj->puntos_por_residuo($residuoC->getNombre());
+    ?>
+    <div class="mt-4">
+    <?php if (empty($puntosRecomendados)) : ?>
+        <div class="alert alert-warning text-center" role="alert">
+            En este momento no hay punto que reciba este residuo
+        </div>
+    <?php else : ?>
+        <h5 class="mb-3">Puntos recomendados para este residuo</h5>
+        <div class="table-responsive">
+            <table class="table table-striped table-bordered">
+                <thead>
+                    <tr>
+                        <th>Nombre del punto</th>
+                        <th>Dirección</th>
+                        <th>Estado</th>
+                        <th>Colaborador</th>
+                        <th>Residuos que recibe</th>
+                    </tr>
+                </thead>
+                <tbody>
+                <?php foreach ($puntosRecomendados as $punto) : ?>
+                    <tr>
+                        <td><?php echo htmlspecialchars($punto->getNombre()); ?></td>
+                        <td><?php echo htmlspecialchars($punto->getDireccion()); ?></td>
+                        <td><?php echo htmlspecialchars($punto->getEstado()); ?></td>
+                        <td><?php echo htmlspecialchars($punto->getColaborador()->getNombre()); ?></td>
+                        <td>
+                            <?php 
+                                $residuos = $punto->getResiduos();
+                                echo $residuos ? implode(', ', $residuos) : 'No especificado';
+                            ?>
+                        </td>
+                    </tr>
+                <?php endforeach; ?>
+                </tbody>
+            </table>
+        </div>
+    <?php endif; ?>
     </div>
 </div>

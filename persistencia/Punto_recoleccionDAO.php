@@ -26,5 +26,13 @@ class Punto_recoleccionDAO{
     public function clasificar_by_categoria($categoria) {
         return "SELECT * FROM punto_recoleccion WHERE nombre LIKE '%$categoria%'";
     }
+    // Buscar puntos que reciben un residuo por nombre exacto
+    public function puntos_por_residuo($nombreResiduo) {
+        return "SELECT prc.*, c.nombre as colaborador_nombre FROM punto_recoleccion prc
+                JOIN punto_residuo pr ON pr.Punto_Recoleccion_idPunto_Recoleccion = prc.idPunto_Recoleccion
+                JOIN residuo r ON pr.Residuo_idResiduo = r.idResiduo
+                JOIN colaborador c ON prc.Colaborador_idColaborador = c.idColaborador
+                WHERE r.nombre = '" . addslashes($nombreResiduo) . "'";
+    }
 }
 ?>
