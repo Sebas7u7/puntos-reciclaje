@@ -97,12 +97,91 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['actualizar_usuario'])
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/css/bootstrap.min.css" rel="stylesheet">
     <title>Actualizar Información - Puntos de Reciclaje</title>
     <style>
-        body { background-color: #f4f7f6; }
-        .update-form-card { margin-top: 50px; padding: 30px; border-radius: 15px; box-shadow: 0 8px 16px rgba(0,0,0,0.1); background-color: #fff; }
-        .update-form-card h2 { color: #333; margin-bottom: 25px; }
-        .form-label { font-weight: bold; color: #555; }
-        .profile-img-preview { max-width: 120px; max-height: 120px; border-radius: 50%; margin-bottom: 10px; }
-    </style>
+    body {
+        background: linear-gradient(to right, #e6ffe6, #f4fff4); /* fondo ecológico */
+        font-family: 'Segoe UI', sans-serif;
+    }
+
+    .update-form-card {
+        margin-top: 60px;
+        padding: 35px;
+        border-radius: 1rem;
+        background-color: #ffffff;
+        box-shadow: 0 10px 30px rgba(0, 128, 0, 0.1);
+        border-left: 6px solid #7ed957;
+    }
+
+    .update-form-card h2 {
+        color: #014421;
+        font-weight: 700;
+        margin-bottom: 25px;
+        text-align: center;
+    }
+
+    .form-label {
+        font-weight: 600;
+        color: #2e5e2d;
+    }
+
+    .form-control {
+        border-radius: 8px;
+        border: 1px solid #cce5cc;
+        transition: border-color 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+    }
+
+    .form-control:focus {
+        border-color: #7ed957;
+        box-shadow: 0 0 0 0.2rem rgba(126, 217, 87, 0.25);
+    }
+
+    .btn-primary {
+        background-color: #7ed957;
+        border-color: #7ed957;
+        font-weight: bold;
+        transition: background-color 0.3s ease;
+    }
+
+    .btn-primary:hover {
+        background-color: #6cc748;
+        border-color: #6cc748;
+        color: #ffffff;
+    }
+
+    .btn-secondary {
+        background-color: #cce5cc;
+        border-color: #cce5cc;
+        color: #014421;
+        font-weight: bold;
+    }
+
+    .btn-secondary:hover {
+        background-color: #b6deb6;
+        border-color: #b6deb6;
+        color: #ffffff;
+    }
+
+    .profile-img-preview {
+        max-width: 120px;
+        max-height: 120px;
+        border-radius: 50%;
+        margin-bottom: 10px;
+        border: 2px solid #7ed957;
+        object-fit: cover;
+    }
+
+    .alert-success {
+        background-color: #d4edda;
+        color: #155724;
+        border-color: #c3e6cb;
+    }
+
+    .alert-danger {
+        background-color: #f8d7da;
+        color: #721c24;
+        border-color: #f5c6cb;
+    }
+</style>
+
 </head>
 <body>
     <div class="container">
