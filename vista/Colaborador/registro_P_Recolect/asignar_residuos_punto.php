@@ -5,66 +5,34 @@ if (!isset($_SESSION["colaborador"])) {
     header("Location: /PuntosReciclaje/index.php");
     exit();
 }
+
 require_once(__DIR__ . '/../../../logica/Punto_recoleccion.php');
-require_once(__DIR__ . '/../../../logica/Residuo.php');
-require_once(__DIR__ . '/../../../persistencia/Conexion.php');
-require_once(__DIR__ . '/../../../persistencia/PuntoResiduoDAO.php');
+require_once(__DIR__ . '/../../../logica/AsignacionResiduoPunto.php');
+
 
 // Procesar formulario
 if (isset($_POST['asignar_residuos'])) {
     $idPunto = intval($_POST['punto']);
     $residuosSeleccionados = isset($_POST['residuos']) ? $_POST['residuos'] : [];
-    $conexion = new Conexion();
-    $conexion->abrirConexion();
-    // Eliminar residuos actuales
-    $conexion->ejecutarConsultaDirecta("DELETE FROM punto_residuo WHERE Punto_Recoleccion_idPunto_Recoleccion = $idPunto");
-    // Insertar los nuevos
-    foreach ($residuosSeleccionados as $idResiduo) {
-        $sql = "INSERT INTO punto_residuo (Residuo_idResiduo, Punto_Recoleccion_idPunto_Recoleccion) VALUES ($idResiduo, $idPunto)";
-        $conexion->ejecutarConsultaDirecta($sql);
-    }
-    $conexion->cerrarConexion();
+    AsignacionResiduoPunto::asignarResiduosAPunto($idPunto, $residuosSeleccionados);
     $_SESSION['message_type'] = 'success';
     $_SESSION['message'] = 'Residuos asignados correctamente al punto.';
     header("Location: asignar_residuos_punto.php");
     exit();
 }
 
+
 $puntoObj = new Punto_recoleccion();
 $puntos = $puntoObj->listar();
-
-// Solo mostrar residuos del colaborador actual
 $residuos = [];
 $colaborador = $_SESSION["colaborador"];
 if ($colaborador && method_exists($colaborador, 'getIdColaborador')) {
-    $conexion = new Conexion();
-    $conexion->abrirConexion();
-    require_once(__DIR__ . '/../../../persistencia/ColaboradorDAO.php');
-    $colaboradorDAO = new ColaboradorDAO();
-    $idsResiduos = $colaboradorDAO->obtenerResiduosColaborador($conexion, $colaborador->getIdColaborador());
-    $conexion->cerrarConexion();
-    if (!empty($idsResiduos)) {
-        $residuoObj = new Residuo();
-        $todos = $residuoObj->mapearPorId();
-        foreach ($idsResiduos as $id) {
-            if (isset($todos[$id])) {
-                $residuos[] = $todos[$id];
-            }
-        }
-    }
+    $residuos = AsignacionResiduoPunto::obtenerResiduosColaborador($colaborador->getIdColaborador());
 }
 
+
 function residuosDelPunto($idPunto) {
-    $conexion = new Conexion();
-    $conexion->abrirConexion();
-    $dao = new PuntoResiduoDAO();
-    $conexion->ejecutarConsulta($dao->obtenerResiduosPorPunto($idPunto));
-    $res = [];
-    while ($row = $conexion->siguienteRegistro()) {
-        $res[] = $row[0];
-    }
-    $conexion->cerrarConexion();
-    return $res;
+    return AsignacionResiduoPunto::obtenerResiduosDePunto($idPunto);
 }
 ?>
 <!DOCTYPE html>
