@@ -144,11 +144,7 @@ $cuenta = $_SESSION["cuenta"] ?? ($colaborador && method_exists($colaborador, 'g
                         <i class="bi bi-list-check"></i> Ver solicitudes
                     </a>
                 </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="/puntos-reciclaje/vista/Colaborador/faqcol.php">
-                        <i class="bi bi-patch-question"></i> FAQ
-                    </a>
-                </li>
+
             </ul>
 
             <span class="navbar-text me-2">

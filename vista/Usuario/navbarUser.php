@@ -159,6 +159,11 @@ $cuenta = $_SESSION["cuenta"];
                         <li><a class="dropdown-item" href="/puntos-reciclaje/vista/Usuario/publicacion/publicacionNoticia.php?tipo=informacion"><i class="bi bi-info-circle"></i> Información</a></li>
                     </ul>
                 </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/puntos-reciclaje/vista/Foro/index.php">
+                        <i class="bi bi-chat-dots me-1"></i> Foro
+                    </a>
+                </li>
             </ul>
 
             <div class="d-flex align-items-center">

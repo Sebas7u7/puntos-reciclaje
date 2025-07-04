@@ -1,3 +1,42 @@
+-- Tabla foro_categoria (opcional, para clasificar los temas)
+CREATE TABLE foro_categoria (
+  idCategoria INT(11) NOT NULL AUTO_INCREMENT,
+  nombre VARCHAR(100) NOT NULL,
+  descripcion TEXT DEFAULT NULL,
+  PRIMARY KEY (idCategoria)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- Tabla foro_tema (hilo principal)
+CREATE TABLE foro_tema (
+  idTema INT(11) NOT NULL AUTO_INCREMENT,
+  titulo VARCHAR(255) NOT NULL,
+  descripcion TEXT NOT NULL,
+  fecha_creacion DATETIME NOT NULL,
+  idUsuario INT(11) NOT NULL,
+  idCategoria INT(11) DEFAULT NULL,
+  PRIMARY KEY (idTema),
+  KEY fk_Tema_Usuario_idx (idUsuario),
+  KEY fk_Tema_Categoria_idx (idCategoria),
+  CONSTRAINT foro_tema_ibfk_1 FOREIGN KEY (idUsuario) REFERENCES usuario (idUsuario),
+  CONSTRAINT foro_tema_ibfk_2 FOREIGN KEY (idCategoria) REFERENCES foro_categoria (idCategoria)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- Tabla foro_respuesta (respuestas a temas o a otras respuestas)
+CREATE TABLE foro_respuesta (
+  idRespuesta INT(11) NOT NULL AUTO_INCREMENT,
+  idTema INT(11) NOT NULL,
+  idUsuario INT(11) NOT NULL,
+  contenido TEXT NOT NULL,
+  fecha DATETIME NOT NULL,
+  idRespuestaPadre INT(11) DEFAULT NULL,
+  PRIMARY KEY (idRespuesta),
+  KEY fk_Respuesta_Tema_idx (idTema),
+  KEY fk_Respuesta_Usuario_idx (idUsuario),
+  KEY fk_Respuesta_Padre_idx (idRespuestaPadre),
+  CONSTRAINT foro_respuesta_ibfk_1 FOREIGN KEY (idTema) REFERENCES foro_tema (idTema),
+  CONSTRAINT foro_respuesta_ibfk_2 FOREIGN KEY (idUsuario) REFERENCES usuario (idUsuario),
+  CONSTRAINT foro_respuesta_ibfk_3 FOREIGN KEY (idRespuestaPadre) REFERENCES foro_respuesta (idRespuesta)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 -- Crear base de datos
 CREATE DATABASE IF NOT EXISTS ecogestordb;
 USE ecogestordb;
