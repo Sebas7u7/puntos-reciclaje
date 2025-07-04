@@ -41,7 +41,7 @@ if (isset($_POST["inicioSesion"])) {
         $colaborador = new Colaborador();
         $colaborador->consultarCuenta($cuenta);
         $_SESSION["colaborador"] = $colaborador;
-        header("Location: /puntos-reciclaje/vista/Colaborador/actualizarDatos.php");
+        header("Location: /puntos-reciclaje/vista/Colaborador/indexColaborador.php");
         exit();
     }
 }
