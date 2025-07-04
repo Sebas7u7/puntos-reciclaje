@@ -17,43 +17,92 @@ $colaborador = $_SESSION["colaborador"];
 $cuenta = $_SESSION["cuenta"] ?? ($colaborador && method_exists($colaborador, 'getCuenta') ? $colaborador->getCuenta() : null);
 ?>
 
-<!-- Estilos personalizados para estética verde -->
+<!-- Estilos del navbar ecológico -->
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/css/bootstrap.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
 <style>
+    * {
+        font-family: 'Inter', sans-serif;
+    }
+
     .navbar {
-        background-color: #ccfc7b; /* verde lima claro */
+        background: linear-gradient(135deg, #ccfc7b 0%, #28a745 100%);
+        box-shadow: 0 8px 16px rgba(40, 167, 69, 0.2);
+        padding: 0.75rem 3rem;
+        border-radius: 0 0 15px 15px;
+        margin-bottom: 2rem;
     }
-    .nav-link {
-        color: #155724 !important; /* Verde oscuro para buena legibilidad */
+
+    .navbar .nav-link {
+        color: #155724 !important;
         font-weight: 500;
-        transition: 0.3s ease;
+        border-radius: 10px;
+        padding: 0.5rem 1rem;
+        transition: all 0.3s ease;
     }
-    .nav-link:hover {
-        background-color: rgba(40, 167, 69, 0.2); /* Verde #28a745 con transparencia */
-        border-radius: 6px;
+
+    .navbar .nav-link:hover {
+        background-color: rgba(255, 255, 255, 0.3);
+        color: #0c4128 !important;
     }
-    .navbar-brand img {
-        border-radius: 50%;
-    }
-    .navbar-text {
-        color: #155724;
+
+    .navbar-brand {
         font-weight: 600;
+        color: #0c4128 !important;
+        font-size: 1.2rem;
+        display: flex;
+        align-items: center;
     }
+
+    .navbar-brand img {
+        width: 35px;
+        height: 35px;
+        border-radius: 50%;
+        margin-right: 0.5rem;
+    }
+
+    .navbar-text {
+        color: #0c4128;
+        font-weight: 600;
+        font-size: 0.95rem;
+    }
+
     .btn-logout {
-        background-color: #28a745; /* Verde Bootstrap */
+        background-color: #28a745;
         color: white !important;
-        border-radius: 5px;
-        padding: 5px 12px;
-        margin-left: 10px;
+        border-radius: 10px;
+        padding: 0.5rem 1rem;
+        font-weight: 500;
         border: none;
+        transition: background-color 0.3s ease;
     }
+
     .btn-logout:hover {
-        background-color: #218838; /* Más oscuro */
+        background-color: #218838;
         color: #fff !important;
     }
-</style>
 
-<!-- Bootstrap Icons -->
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+    .navbar-toggler {
+        border-color: rgba(21, 87, 36, 0.5);
+    }
+
+    .navbar-toggler-icon {
+        background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='%230c4128' viewBox='0 0 30 30'%3e%3cpath stroke='rgba%280, 0, 0, 0.5%29' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e");
+    }
+
+    .dropdown-menu {
+        border-radius: 10px;
+        border: none;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    }
+
+    .dropdown-item:hover {
+        background-color: #d4edda;
+        color: #0c4128;
+    }
+</style>
 
 <nav class="navbar navbar-expand-lg">
     <div class="container-fluid">
@@ -93,6 +142,11 @@ $cuenta = $_SESSION["cuenta"] ?? ($colaborador && method_exists($colaborador, 'g
                 <li class="nav-item">
                     <a class="nav-link" href="/puntos-reciclaje/vista/Colaborador/solicitud/verSolicitudes.php">
                         <i class="bi bi-list-check"></i> Ver solicitudes
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/puntos-reciclaje/vista/Colaborador/faqcol.php">
+                        <i class="bi bi-patch-question"></i> FAQ
                     </a>
                 </li>
             </ul>

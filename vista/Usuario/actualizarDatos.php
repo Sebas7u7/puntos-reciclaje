@@ -117,154 +117,459 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['actualizar_usuario'])
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
     <title>Actualizar Información - Puntos de Reciclaje</title>
     <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+    
     body {
-        background: linear-gradient(to right, #e6ffe6, #f4fff4); /* fondo ecológico */
-        font-family: 'Segoe UI', sans-serif;
+        background: linear-gradient(135deg, #f8f9fa 0%, #e8f5e8 50%, #d4edda 100%);
+        font-family: 'Inter', 'Segoe UI', sans-serif;
+        min-height: 100vh;
+        padding: 2rem 0;
     }
 
-    .update-form-card {
-        margin-top: 60px;
-        padding: 35px;
-        border-radius: 1rem;
-        background-color: #ffffff;
-        box-shadow: 0 10px 30px rgba(0, 128, 0, 0.1);
-        border-left: 6px solid #7ed957;
+    .update-form-container {
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(10px);
+        border-radius: 20px;
+        box-shadow: 
+            0 20px 40px rgba(0, 128, 0, 0.1),
+            0 0 0 1px rgba(255, 255, 255, 0.1);
+        overflow: hidden;
+        margin-top: 2rem;
     }
 
-    .update-form-card h2 {
-        color: #014421;
-        font-weight: 700;
-        margin-bottom: 25px;
+    .update-header {
+        background: linear-gradient(135deg, #ccfc7b 0%, #28a745 100%);
+        padding: 2.5rem 2rem;
         text-align: center;
+        position: relative;
+        overflow: hidden;
     }
 
-    .form-label {
-        font-weight: 600;
-        color: #2e5e2d;
+    .update-header::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grain" width="100" height="100" patternUnits="userSpaceOnUse"><circle cx="25" cy="25" r="1" fill="white" opacity="0.1"/><circle cx="75" cy="75" r="1" fill="white" opacity="0.1"/><circle cx="50" cy="10" r="0.5" fill="white" opacity="0.1"/><circle cx="90" cy="40" r="0.5" fill="white" opacity="0.1"/></pattern></defs><rect width="100" height="100" fill="url(%23grain)"/></svg>');
+        opacity: 0.3;
     }
 
-    .form-control {
-        border-radius: 8px;
-        border: 1px solid #cce5cc;
-        transition: border-color 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+    .update-header h2 {
+        color: #155724;
+        font-weight: 700;
+        font-size: 2.2rem;
+        margin: 0;
+        position: relative;
+        z-index: 1;
+        text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     }
 
-    .form-control:focus {
-        border-color: #7ed957;
-        box-shadow: 0 0 0 0.2rem rgba(126, 217, 87, 0.25);
+    .update-header .subtitle {
+        color: #0c4128;
+        font-size: 1.1rem;
+        margin-top: 0.5rem;
+        opacity: 0.9;
+        position: relative;
+        z-index: 1;
     }
 
-    .btn-primary {
-        background-color: #7ed957;
-        border-color: #7ed957;
-        font-weight: bold;
-        transition: background-color 0.3s ease;
+    .profile-section {
+        padding: 2rem;
+        text-align: center;
+        background: linear-gradient(135deg, #f8f9fa 0%, #ffffff 100%);
+        border-bottom: 1px solid #e9ecef;
     }
 
-    .btn-primary:hover {
-        background-color: #6cc748;
-        border-color: #6cc748;
-        color: #ffffff;
-    }
-
-    .btn-secondary {
-        background-color: #cce5cc;
-        border-color: #cce5cc;
-        color: #014421;
-        font-weight: bold;
-    }
-
-    .btn-secondary:hover {
-        background-color: #b6deb6;
-        border-color: #b6deb6;
-        color: #ffffff;
+    .profile-img-container {
+        position: relative;
+        display: inline-block;
+        margin-bottom: 1rem;
     }
 
     .profile-img-preview {
-        max-width: 120px;
-        max-height: 120px;
+        width: 140px;
+        height: 140px;
         border-radius: 50%;
-        margin-bottom: 10px;
-        border: 2px solid #7ed957;
+        border: 4px solid #28a745;
         object-fit: cover;
+        box-shadow: 
+            0 10px 30px rgba(40, 167, 69, 0.2),
+            0 0 0 8px rgba(40, 167, 69, 0.1);
+        transition: all 0.3s ease;
+    }
+
+    .profile-img-preview:hover {
+        transform: scale(1.05);
+        box-shadow: 
+            0 15px 40px rgba(40, 167, 69, 0.3),
+            0 0 0 8px rgba(40, 167, 69, 0.2);
+    }
+
+    .profile-placeholder {
+        width: 140px;
+        height: 140px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, #e9ecef 0%, #f8f9fa 100%);
+        border: 4px solid #28a745;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 3rem;
+        color: #6c757d;
+        box-shadow: 
+            0 10px 30px rgba(40, 167, 69, 0.2),
+            0 0 0 8px rgba(40, 167, 69, 0.1);
+    }
+
+    .form-section {
+        padding: 2.5rem;
+        background: white;
+    }
+
+    .form-floating {
+        margin-bottom: 1.5rem;
+    }
+
+    .form-floating > .form-control {
+        height: 58px;
+        padding: 1rem 0.75rem;
+        border: 2px solid #e9ecef;
+        border-radius: 12px;
+        background: #f8f9fa;
+        transition: all 0.3s ease;
+        font-size: 1rem;
+    }
+
+    .form-floating > .form-control:focus {
+        border-color: #28a745;
+        background: white;
+        box-shadow: 0 0 0 0.25rem rgba(40, 167, 69, 0.15);
+        transform: translateY(-2px);
+    }
+
+    .form-floating > label {
+        padding: 1rem 0.75rem;
+        color: #6c757d;
+        font-weight: 500;
+    }
+
+    .file-upload-section {
+        background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+        border: 2px dashed #28a745;
+        border-radius: 12px;
+        padding: 2rem;
+        text-align: center;
+        margin-bottom: 2rem;
+        transition: all 0.3s ease;
+    }
+
+    .file-upload-section:hover {
+        background: linear-gradient(135deg, #e8f5e8 0%, #d4edda 100%);
+        border-color: #20c997;
+    }
+
+    .file-upload-section label {
+        font-weight: 600;
+        color: #28a745;
+        margin-bottom: 0.5rem;
+        display: block;
+    }
+
+    .file-upload-section .form-control {
+        border: none;
+        background: transparent;
+        padding: 0.5rem;
+    }
+
+    .btn-group-custom {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 1rem;
+        margin-top: 2rem;
+    }
+
+    .btn-primary {
+        background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+        border: none;
+        border-radius: 12px;
+        padding: 1rem 2rem;
+        font-weight: 600;
+        font-size: 1.1rem;
+        transition: all 0.3s ease;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        box-shadow: 0 4px 15px rgba(40, 167, 69, 0.3);
+    }
+
+    .btn-primary:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(40, 167, 69, 0.4);
+        background: linear-gradient(135deg, #218838 0%, #1ea97c 100%);
+    }
+
+    .btn-secondary {
+        background: linear-gradient(135deg, #6c757d 0%, #495057 100%);
+        border: none;
+        border-radius: 12px;
+        padding: 1rem 2rem;
+        font-weight: 600;
+        font-size: 1.1rem;
+        color: white;
+        transition: all 0.3s ease;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    .btn-secondary:hover {
+        transform: translateY(-2px);
+        background: linear-gradient(135deg, #5a6268 0%, #3d4349 100%);
+        color: white;
+    }
+
+    .alert {
+        border-radius: 12px;
+        border: none;
+        padding: 1.25rem;
+        margin-bottom: 2rem;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
     }
 
     .alert-success {
-        background-color: #d4edda;
+        background: linear-gradient(135deg, #d4edda 0%, #c3e6cb 100%);
         color: #155724;
-        border-color: #c3e6cb;
+        border-left: 4px solid #28a745;
     }
 
     .alert-danger {
-        background-color: #f8d7da;
+        background: linear-gradient(135deg, #f8d7da 0%, #f5c6cb 100%);
         color: #721c24;
-        border-color: #f5c6cb;
+        border-left: 4px solid #dc3545;
+    }
+
+    .form-icon {
+        position: absolute;
+        right: 1rem;
+        top: 50%;
+        transform: translateY(-50%);
+        color: #6c757d;
+        z-index: 10;
+    }
+
+    .input-group-custom {
+        position: relative;
+    }
+
+    @media (max-width: 768px) {
+        .btn-group-custom {
+            grid-template-columns: 1fr;
+        }
+        
+        .profile-img-preview, .profile-placeholder {
+            width: 120px;
+            height: 120px;
+        }
+        
+        .update-header h2 {
+            font-size: 1.8rem;
+        }
+        
+        .form-section {
+            padding: 1.5rem;
+        }
+    }
+
+    .floating-elements {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        pointer-events: none;
+        z-index: -1;
+    }
+
+    .floating-elements::before {
+        content: '';
+        position: absolute;
+        top: 10%;
+        left: 10%;
+        width: 100px;
+        height: 100px;
+        background: radial-gradient(circle, rgba(204, 252, 123, 0.1) 0%, transparent 70%);
+        border-radius: 50%;
+        animation: float 6s ease-in-out infinite;
+    }
+
+    .floating-elements::after {
+        content: '';
+        position: absolute;
+        bottom: 20%;
+        right: 15%;
+        width: 150px;
+        height: 150px;
+        background: radial-gradient(circle, rgba(40, 167, 69, 0.1) 0%, transparent 70%);
+        border-radius: 50%;
+        animation: float 8s ease-in-out infinite reverse;
+    }
+
+    @keyframes float {
+        0%, 100% { transform: translateY(0px) rotate(0deg); }
+        50% { transform: translateY(-20px) rotate(5deg); }
     }
 </style>
 
 </head>
 <body>
+    <div class="floating-elements"></div>
+    
     <div class="container">
         <div class="row justify-content-center">
-            <div class="col-md-8 col-lg-7">
-                <div class="update-form-card">
-                    <!-- Foto de perfil destacada -->
-                    <div class="text-center mb-3">
-                        <?php 
-                        $foto = $usuario->getFotoPerfil();
-                        $foto_path = $foto ? realpath(__DIR__ . '/../../' . $foto) : false;
-                        if ($foto && $foto_path && file_exists($foto_path)) : ?>
-                            <img src="/<?php echo htmlspecialchars($foto); ?>" alt="Foto de perfil actual" class="profile-img-preview" style="width:120px;height:120px;object-fit:cover;border-radius:50%;border:4px solid #7ed957;box-shadow:0 2px 8px rgba(0,0,0,0.12);">
-                        <?php else: ?>
-                            <div style="width:120px;height:120px;display:inline-block;border-radius:50%;background:#eee;line-height:120px;font-size:48px;color:#bbb;border:4px solid #7ed957;"> <i class="bi bi-person-circle"></i> </div>
-                        <?php endif; ?>
+            <div class="col-md-10 col-lg-8">
+                <div class="update-form-container">
+                    <!-- Header Section -->
+                    <div class="update-header">
+                        <h2>✨ Actualizar Mis Datos</h2>
+                        <p class="subtitle">Mantén tu información actualizada para una mejor experiencia</p>
                     </div>
-                    <h2 class="text-center">Actualizar Mis Datos</h2>
-                    <?php if ($mensaje): ?>
-                        <div class="alert alert-<?php echo htmlspecialchars($tipo_mensaje); ?> alert-dismissible fade show" role="alert">
-                            <?php echo htmlspecialchars($mensaje); ?>
-                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                        </div>
-                    <?php endif; ?>
-                    <form method="POST" action="actualizarDatos.php" enctype="multipart/form-data">
-                        <div class="mb-3">
-                            <label for="nombre" class="form-label">Nombre:</label>
-                            <input type="text" class="form-control" id="nombre" name="nombre" value="<?php echo htmlspecialchars($usuario->getNombre()); ?>" required>
-                        </div>
-                        <div class="mb-3">
-                            <label for="apellido" class="form-label">Apellido:</label>
-                            <input type="text" class="form-control" id="apellido" name="apellido" value="<?php echo htmlspecialchars($usuario->getApellido()); ?>" required>
-                        </div>
-                        <div class="mb-3">
-                            <label for="telefono" class="form-label">Teléfono:</label>
-                            <input type="text" class="form-control" id="telefono" name="telefono" value="<?php echo htmlspecialchars($usuario->getTelefono()); ?>" required pattern="[0-9]{7,15}" title="Solo números, 7-15 dígitos">
-                        </div>
-                        <div class="mb-3">
-                            <label for="direccion" class="form-label">Dirección:</label>
-                            <input type="text" class="form-control" id="direccion" name="direccion" value="<?php echo htmlspecialchars($usuario->getDireccion()); ?>" required placeholder="Ej: Calle 123 #45-67, Barrio ...">
-                        </div>
-                        <div class="mb-3">
-                            <label for="nickname" class="form-label">Nickname:</label>
-                            <input type="text" class="form-control" id="nickname" name="nickname" value="<?php echo htmlspecialchars($usuario->getNickname()); ?>" required pattern="[a-zA-Z0-9_\-]{3,20}" title="3-20 caracteres alfanuméricos, guión o guión bajo">
-                        </div>
-                        <div class="mb-3">
-                            <label for="foto_perfil" class="form-label">Foto de Perfil (opcional):</label><br>
-                            <?php if ($usuario->getFotoPerfil()): ?>
-                                <img src="/<?php echo htmlspecialchars($usuario->getFotoPerfil()); ?>" alt="Foto de perfil actual" class="profile-img-preview"><br>
+
+                    <!-- Profile Section -->
+                    <div class="profile-section">
+                        <div class="profile-img-container">
+                            <?php 
+                            $foto = $usuario->getFotoPerfil();
+                            $foto_path = $foto ? realpath(__DIR__ . '/../../' . $foto) : false;
+                            if ($foto && $foto_path && file_exists($foto_path)) : ?>
+                                <img src="/<?php echo htmlspecialchars($foto); ?>" alt="Foto de perfil actual" class="profile-img-preview">
+                            <?php else: ?>
+                                <div class="profile-placeholder">
+                                    <i class="bi bi-person-circle"></i>
+                                </div>
                             <?php endif; ?>
-                            <input type="file" class="form-control" id="foto_perfil" name="foto_perfil" accept="image/*">
                         </div>
-                        <div class="d-grid gap-2 mt-4">
-                            <button type="submit" name="actualizar_usuario" class="btn btn-primary btn-lg">Guardar Cambios</button>
-                            <a href="indexUsuario.php" class="btn btn-secondary">Cancelar</a>
-                        </div>
-                    </form>
+                        <h4 style="color: #28a745; margin: 0;">¡Hola, <?php echo htmlspecialchars($usuario->getNombre()); ?>!</h4>
+                        <p style="color: #6c757d; margin-top: 0.5rem;">Actualiza tu información personal cuando lo necesites</p>
+                    </div>
+
+                    <!-- Form Section -->
+                    <div class="form-section">
+                        <?php if ($mensaje): ?>
+                            <div class="alert alert-<?php echo htmlspecialchars($tipo_mensaje); ?> alert-dismissible fade show" role="alert">
+                                <i class="bi bi-<?php echo $tipo_mensaje === 'success' ? 'check-circle-fill' : 'exclamation-triangle-fill'; ?> me-2"></i>
+                                <?php echo htmlspecialchars($mensaje); ?>
+                                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                            </div>
+                        <?php endif; ?>
+
+                        <form method="POST" action="actualizarDatos.php" enctype="multipart/form-data">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-floating">
+                                        <input type="text" class="form-control" id="nombre" name="nombre" 
+                                               value="<?php echo htmlspecialchars($usuario->getNombre()); ?>" 
+                                               placeholder="Nombre" required>
+                                        <label for="nombre"><i class="bi bi-person me-2"></i>Nombre</label>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-floating">
+                                        <input type="text" class="form-control" id="apellido" name="apellido" 
+                                               value="<?php echo htmlspecialchars($usuario->getApellido()); ?>" 
+                                               placeholder="Apellido" required>
+                                        <label for="apellido"><i class="bi bi-person-badge me-2"></i>Apellido</label>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-floating">
+                                        <input type="text" class="form-control" id="telefono" name="telefono" 
+                                               value="<?php echo htmlspecialchars($usuario->getTelefono()); ?>" 
+                                               placeholder="Teléfono" required pattern="[0-9]{7,15}" 
+                                               title="Solo números, 7-15 dígitos">
+                                        <label for="telefono"><i class="bi bi-telephone me-2"></i>Teléfono</label>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-floating">
+                                        <input type="text" class="form-control" id="nickname" name="nickname" 
+                                               value="<?php echo htmlspecialchars($usuario->getNickname()); ?>" 
+                                               placeholder="Nickname" required pattern="[a-zA-Z0-9_\-]{3,20}" 
+                                               title="3-20 caracteres alfanuméricos, guión o guión bajo">
+                                        <label for="nickname"><i class="bi bi-at me-2"></i>Nickname</label>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="form-floating">
+                                <input type="text" class="form-control" id="direccion" name="direccion" 
+                                       value="<?php echo htmlspecialchars($usuario->getDireccion()); ?>" 
+                                       placeholder="Dirección" required>
+                                <label for="direccion"><i class="bi bi-geo-alt me-2"></i>Dirección</label>
+                            </div>
+
+                            <div class="file-upload-section">
+                                <label for="foto_perfil">
+                                    <i class="bi bi-camera-fill me-2"></i>
+                                    Cambiar Foto de Perfil
+                                </label>
+                                <p style="color: #6c757d; margin-bottom: 1rem; font-size: 0.9rem;">
+                                    Formatos aceptados: JPG, JPEG, PNG, GIF
+                                </p>
+                                <input type="file" class="form-control" id="foto_perfil" name="foto_perfil" accept="image/*">
+                            </div>
+
+                            <div class="btn-group-custom">
+                                <button type="submit" name="actualizar_usuario" class="btn btn-primary">
+                                    <i class="bi bi-check-circle me-2"></i>
+                                    Guardar Cambios
+                                </button>
+                                <a href="indexUsuario.php" class="btn btn-secondary">
+                                    <i class="bi bi-arrow-left me-2"></i>
+                                    Cancelar
+                                </a>
+                            </div>
+                        </form>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
+    
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Preview image before upload
+        document.getElementById('foto_perfil').addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const preview = document.querySelector('.profile-img-preview, .profile-placeholder');
+                    if (preview) {
+                        if (preview.classList.contains('profile-placeholder')) {
+                            preview.innerHTML = '<img src="' + e.target.result + '" class="profile-img-preview" style="width: 140px; height: 140px;">';
+                        } else {
+                            preview.src = e.target.result;
+                        }
+                    }
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+
+        // Auto-hide alerts after 5 seconds
+        setTimeout(function() {
+            const alerts = document.querySelectorAll('.alert');
+            alerts.forEach(function(alert) {
+                const bsAlert = new bootstrap.Alert(alert);
+                bsAlert.close();
+            });
+        }, 5000);
+    </script>
 </body>
 </html>

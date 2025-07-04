@@ -19,13 +19,13 @@ if (isset($_POST["inicioSesion"])) {
     
     if(!$autenticado){ // Si autenticar() devuelve false
         $_SESSION['message_type'] = 'danger';
-        $_SESSION['message'] = 'Correo o contraseña incorrectos.';
+        $_SESSION['message'] = 'Credenciales incorrectas. Por favor verifica tu correo electrónico y contraseña.';
         header("Location: /puntos-reciclaje/index.php"); // Vuelve al login
         exit();
     }
     if($cuenta->getEstado()==0){
         $_SESSION['message_type'] = 'warning';
-        $_SESSION['message'] = 'Tu cuenta aún no ha sido activada. Por favor revisa tu correo electrónico y sigue el enlace de activación antes de iniciar sesión.';
+        $_SESSION['message'] = 'Tu cuenta no está verificada. Por favor revisa tu correo electrónico y activa tu cuenta antes de iniciar sesión.';
         header("Location: /puntos-reciclaje/index.php");
         exit();
     }
