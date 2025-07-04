@@ -1,6 +1,6 @@
 <div class="container-fluid">
     <div class="row justify-content-center">
-        <div class="col-12">
+        <div class="col-12 xl-10">
             <div class="classification-card">
                 <div class="section-header">
                     <h1 class="section-title">
@@ -207,25 +207,25 @@ $residuos = $residuo->listar();
     }
 
     /* Responsive adjustments */
-    @media (min-width: 1920px) {
+    @media (min-width: 80%) {
         .container-fluid {
             width: 80%;
         }
     }
 
-    @media (min-width: 1400px) and (max-width: 1919px) {
+    @media (min-width: 80%) and (max-width: 80%) {
         .container-fluid {
             width: 85%;
         }
     }
 
-    @media (min-width: 1200px) and (max-width: 1399px) {
+    @media (min-width: 80%) and (max-width: 80%) {
         .container-fluid {
             width: 90%;
         }
     }
 
-    @media (min-width: 992px) and (max-width: 1199px) {
+    @media (min-width: 80%) and (max-width: 80%) {
         .container-fluid {
             width: 92%;
         }
@@ -235,7 +235,7 @@ $residuos = $residuo->listar();
         }
     }
 
-    @media (max-width: 991px) {
+    @media (max-width: 80%) {
         .container-fluid {
             width: 95%;
         }
@@ -253,7 +253,7 @@ $residuos = $residuo->listar();
         }
     }
 
-    @media (max-width: 767px) {
+    @media (max-width: 80%) {
         .container-fluid {
             width: 98%;
             padding: 2rem 0.5rem;
@@ -269,7 +269,7 @@ $residuos = $residuo->listar();
         }
     }
 
-    @media (max-width: 576px) {
+    @media (max-width: 80%) {
         .container-fluid {
             width: 100%;
             padding: 1rem 0.25rem;

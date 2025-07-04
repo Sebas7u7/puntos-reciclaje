@@ -24,7 +24,8 @@ $usuario = $_SESSION["usuario"]; // Obtenemos el objeto Usuario de la sesión
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
         
         body {
-            background: linear-gradient(135deg, #f8f9fa 0%, rgba(204, 252, 123, 0.1) 50%, rgba(40, 167, 69, 0.1) 100%);
+            
+            background: linear-gradient(135deg, #f0fff4 0%, #e6ffe6 50%, #ccfc7b 100%);
             font-family: 'Inter', sans-serif;
             min-height: 100vh;
             
@@ -488,11 +489,11 @@ $usuario = $_SESSION["usuario"]; // Obtenemos el objeto Usuario de la sesión
                         </div>
                     </a>
 
-                    <a href="faqusu.php" class="action-card">
+                    <a href="/puntos-reciclaje/vista/Foro/index.php" class="action-card">
                         <i class="bi bi-question-circle action-icon"></i>
-                        <div class="action-title">Preguntas Frecuentes</div>
+                        <div class="action-title">Foros</div>
                         <div class="action-description">
-                            Encuentra respuestas a las dudas más comunes sobre reciclaje
+                            Participa en nuestros foros para discutir temas de reciclaje y sostenibilidad
                         </div>
                     </a>
 

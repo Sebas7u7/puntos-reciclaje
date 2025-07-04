@@ -123,7 +123,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['actualizar_usuario'])
     @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
     
     body {
-        background: linear-gradient(135deg, #f8f9fa 0%, #e8f5e8 50%, #d4edda 100%);
+        background: linear-gradient(135deg, #f0fff4 0%, #e6ffe6 50%, #ccfc7b 100%);
         font-family: 'Inter', 'Segoe UI', sans-serif;
         min-height: 100vh;
         padding: 2rem 0;

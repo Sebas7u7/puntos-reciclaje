@@ -3,11 +3,13 @@ require_once(__DIR__ . '/../../logica/Usuario.php');
 require_once(__DIR__ . '/../../logica/Residuo.php');
 require_once(__DIR__ . '/../../logica/Colaborador.php');
 require_once(__DIR__ . '/../../logica/Punto_recoleccion.php');
+require_once(__DIR__ . '/../../logica/Comentario.php');
+
 session_start();
 header("Cache-Control: no-store, no-cache, must-revalidate, max-age=0");
 header("Cache-Control: post-check=0, pre-check=0", false);
 header("Pragma: no-cache");
-if (isset($_GET["cerrarSesion"])||!isset($_SESSION["usuario"])) {
+if (isset($_GET["cerrarSesion"]) || !isset($_SESSION["usuario"])) {
     $_SESSION = [];
     session_destroy();
 
@@ -20,6 +22,7 @@ $cuenta = $_SESSION["cuenta"];
 
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -27,53 +30,54 @@ $cuenta = $_SESSION["cuenta"];
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
     <style>
-         body {
-    background: linear-gradient(to top, #ccfc7b 40%, white);
-    justify-content: center;
-    align-items: center;
-    min-height: 100vh;
-    font-family: 'Quicksand', sans-serif;
-  } 
+        body {
+            background: linear-gradient(to top, #ccfc7b 40%, white);
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            font-family: 'Quicksand', sans-serif;
+        }
+
         .hero-section {
             background: linear-gradient(135deg, #ccfc7b 0%, #28a745 100%);
             color: #155724;
             padding: 4rem 0;
             margin-bottom: 3rem;
         }
-        
+
         .category-card {
             background: white;
             border-radius: 15px;
-            box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
             margin-bottom: 2rem;
             overflow: hidden;
             transition: transform 0.3s ease;
         }
-        
+
         .category-card:hover {
             transform: translateY(-5px);
         }
-        
+
         .category-header {
             background: linear-gradient(135deg, #ccfc7b 0%, #28a745 100%);
             color: #155724;
             padding: 1.5rem;
             margin: 0;
         }
-        
+
         .category-icon {
             font-size: 1.5rem;
             margin-right: 0.5rem;
         }
-        
+
         .faq-item {
             border-bottom: 1px solid #e9ecef;
         }
-        
+
         .faq-item:last-child {
             border-bottom: none;
         }
-        
+
         .faq-question {
             background: none;
             border: none;
@@ -84,30 +88,30 @@ $cuenta = $_SESSION["cuenta"];
             color: #495057;
             transition: background-color 0.3s ease;
         }
-        
+
         .faq-question:hover {
             background-color: #f8f9fa;
         }
-        
+
         .faq-question[aria-expanded="true"] {
             background-color: #d4edda;
             color: #155724;
         }
-        
+
         .faq-answer {
             padding: 0 1.5rem 1.5rem 1.5rem;
             color: #6c757d;
             line-height: 1.6;
         }
-        
+
         .chevron {
             transition: transform 0.3s ease;
         }
-        
+
         .faq-question[aria-expanded="true"] .chevron {
             transform: rotate(180deg);
         }
-        
+
         .back-btn {
             background: linear-gradient(135deg, #ccfc7b 0%, #28a745 100%);
             border: none;
@@ -120,12 +124,12 @@ $cuenta = $_SESSION["cuenta"];
             transition: transform 0.3s ease;
             font-weight: 600;
         }
-        
+
         .back-btn:hover {
             transform: translateY(-2px);
             color: #0c4128;
         }
-        
+
         .highlight-tip {
             background: linear-gradient(135deg, #d1ecf1 0%, #bee5eb 100%);
             border-left: 4px solid #17a2b8;
@@ -135,9 +139,10 @@ $cuenta = $_SESSION["cuenta"];
         }
     </style>
 </head>
+
 <body>
     <?php include 'navbarUser.php'; ?>
-    
+
     <!-- Hero Section -->
     <div class="hero-section">
         <div class="container">
@@ -429,4 +434,5 @@ $cuenta = $_SESSION["cuenta"];
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
+
 </html>

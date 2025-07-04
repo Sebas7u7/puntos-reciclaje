@@ -12,7 +12,7 @@
     <style>
         body {
             font-family: 'Segoe UI', sans-serif;
-            background-color: #f0fdf4;
+            background: linear-gradient(135deg, #f0fff4 0%, #e6ffe6 50%, #ccfc7b 100%);
             margin: 0;
             padding: 0;
         }
