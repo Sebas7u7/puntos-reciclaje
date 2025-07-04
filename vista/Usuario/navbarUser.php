@@ -143,6 +143,11 @@ $cuenta = $_SESSION["cuenta"];
                         <i class="bi bi-truck me-1"></i> Solicitar Recolección
                     </a>
                 </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/puntos-reciclaje/vista/Usuario/SolicitudRecoleecion/estadoSolicitud.php">
+                        <i class="bi bi-clipboard-check me-1"></i> Seguimiento de Solicitudes
+                    </a>
+                </li>
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownPublicaciones" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                         <i class="bi bi-newspaper me-1"></i> Publicaciones
@@ -153,11 +158,6 @@ $cuenta = $_SESSION["cuenta"];
                         <li><a class="dropdown-item" href="/puntos-reciclaje/vista/Usuario/publicacion/publicacionNoticia.php?tipo=evento"><i class="bi bi-calendar-event"></i> Eventos</a></li>
                         <li><a class="dropdown-item" href="/puntos-reciclaje/vista/Usuario/publicacion/publicacionNoticia.php?tipo=informacion"><i class="bi bi-info-circle"></i> Información</a></li>
                     </ul>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="/puntos-reciclaje/vista/Usuario/preguntas/preguntas_frec.php">
-                        <i class="bi bi-question-circle me-1"></i> Preguntas Frecuentes
-                    </a>
                 </li>
             </ul>
 

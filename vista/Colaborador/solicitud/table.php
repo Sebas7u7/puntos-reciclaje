@@ -11,6 +11,7 @@
                 <th class="align-middle text-nowrap">Comentarios</th>
                 <th class="align-middle text-nowrap">Fecha Programada</th>
                 <th class="align-middle text-nowrap">Estado</th>
+                <th class="align-middle text-nowrap">Descripción del Proceso</th>
                 <th class="align-middle text-nowrap">Acción</th>
             </tr>
         </thead>
@@ -57,11 +58,31 @@
                         <?= htmlspecialchars($solicitud->getEstado()) ?>
                     </span>
                 </td>
+                <td class="align-middle">
+                    <div style="max-width: 220px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
+                        <?= htmlspecialchars($solicitud->getDescripcionProceso()) ?>
+                    </div>
+                </td>
                 <td class="align-middle text-nowrap">
-                        <button type="submit" class="btn btn-sm btn-custom">
-                            <i class="bi bi-calendar-check"></i> <span class="d-none d-md-inline">Programar</span>
-                        </button>
-                    </form>
+                    <?php if($solicitud->getEstado() != 'completado'): ?>
+                        <form method="POST" action="programarSolicitud.php" style="display:inline;" onsubmit="return validarFechaProgramada(this)">
+                            <input type="hidden" name="id" value="<?= htmlspecialchars($solicitud->getId()) ?>">
+                            <input type="datetime-local" name="fecha_programada" class="form-control form-control-sm mb-1" value="<?= $solicitud->getFechaProgramada() ? htmlspecialchars(date('Y-m-d\TH:i', strtotime($solicitud->getFechaProgramada()))) : '' ?>" required min="<?= date('Y-m-d\TH:i') ?>">
+                            <button type="submit" class="btn btn-sm btn-primary w-100 mt-1">
+                                <i class="bi bi-calendar-check"></i> Programar
+                            </button>
+                        </form>
+                        <form method="POST" action="programarSolicitud.php" style="display:inline; margin-top:4px;">
+                            <input type="hidden" name="id" value="<?= htmlspecialchars($solicitud->getId()) ?>">
+                            <input type="hidden" name="estado" value="completado">
+                            <input type="text" name="descripcion_proceso" class="form-control form-control-sm mb-1" placeholder="Describe el proceso..." value="<?= htmlspecialchars($solicitud->getDescripcionProceso()) ?>" required>
+                            <button type="submit" class="btn btn-sm btn-success w-100 mt-1">
+                                <i class="bi bi-check-circle"></i> Completar
+                            </button>
+                        </form>
+                    <?php else: ?>
+                        <span class="text-success">Completado</span>
+                    <?php endif; ?>
                 </td>
             </tr>
             <?php endforeach; ?>

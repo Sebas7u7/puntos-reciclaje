@@ -27,9 +27,10 @@ if (isset($_POST["registrar"])) {
     }
     $cuenta = new Cuenta();
     $colaboradorRegistrado = new Colaborador();
+    $servicio_domicilio = isset($_POST["servicio_domicilio"]) ? 1 : 0;
     $idCuenta = $cuenta  -> registrar($_POST["correo"],$_POST["clave"],2);
     if ($idCuenta){
-        $colaboradorRegistrado -> registrar($_POST["nombre"], $_POST["servicio_ofrecido"],$idCuenta);
+        $colaboradorRegistrado -> registrar($_POST["nombre"], $_POST["servicio_ofrecido"], $servicio_domicilio, $idCuenta);
         if ($colaboradorRegistrado) {
             $_SESSION['message_type'] = 'success';
             $_SESSION['message'] = '¡Colaborador registrado exitosamente! Ahora tienes que activar cuenta.';

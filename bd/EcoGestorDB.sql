@@ -120,6 +120,7 @@ CREATE TABLE solicitud_recoleccion (
   Colaborador_idColaborador INT(11) NOT NULL,
   cantidad INT(11) NOT NULL DEFAULT 1,
   comentarios TEXT DEFAULT NULL,
+  descripcion_proceso TEXT DEFAULT NULL,
   PRIMARY KEY (idSolicitud_Recoleccion),
   KEY Usuario_idUsuario (Usuario_idUsuario),
   KEY Residuo_idResiduo (Residuo_idResiduo),

@@ -21,11 +21,26 @@ if (isset($_POST['asignar_residuos'])) {
     exit();
 }
 
+// Procesar eliminación de punto
+if (isset($_POST['eliminar_punto']) && isset($_POST['punto'])) {
+    require_once(__DIR__ . '/../../../logica/Punto_recoleccion.php');
+    $puntoObj = new Punto_recoleccion();
+    $idPunto = intval($_POST['punto']);
+    $puntoObj->eliminar($idPunto);
+    $_SESSION['message_type'] = 'success';
+    $_SESSION['message'] = 'Punto eliminado correctamente.';
+    header("Location: asignar_residuos_punto.php");
+    exit();
+}
 
 $puntoObj = new Punto_recoleccion();
-$puntos = $puntoObj->listar();
-$residuos = [];
+$puntos = [];
 $colaborador = $_SESSION["colaborador"];
+if ($colaborador && method_exists($colaborador, 'getIdColaborador')) {
+    // Solo mostrar puntos creados por el colaborador actual
+    $puntos = $puntoObj->listarPorColaborador($colaborador->getIdColaborador());
+}
+$residuos = [];
 if ($colaborador && method_exists($colaborador, 'getIdColaborador')) {
     $residuos = AsignacionResiduoPunto::obtenerResiduosColaborador($colaborador->getIdColaborador());
 }
@@ -57,14 +72,17 @@ function residuosDelPunto($idPunto) {
     <form method="POST">
         <div class="mb-3">
             <label for="punto" class="form-label">Selecciona el punto de recolección:</label>
-            <select class="form-select" id="punto" name="punto" required onchange="this.form.submit()">
-                <option value="">-- Selecciona un punto --</option>
-                <?php foreach ($puntos as $p): ?>
-                    <option value="<?php echo $p->getIdPuntoRecoleccion(); ?>" <?php if(isset($_POST['punto']) && $_POST['punto']==$p->getIdPuntoRecoleccion()) echo 'selected'; ?>>
-                        <?php echo htmlspecialchars($p->getNombre()); ?>
-                    </option>
-                <?php endforeach; ?>
-            </select>
+            <div class="input-group">
+                <select class="form-select" id="punto" name="punto" required onchange="this.form.submit()">
+                    <option value="">-- Selecciona un punto --</option>
+                    <?php foreach ($puntos as $p): ?>
+                        <option value="<?php echo $p->getIdPuntoRecoleccion(); ?>" <?php if(isset($_POST['punto']) && $_POST['punto']==$p->getIdPuntoRecoleccion()) echo 'selected'; ?>>
+                            <?php echo htmlspecialchars($p->getNombre()); ?>
+                        </option>
+                    <?php endforeach; ?>
+                </select>
+                <button type="submit" name="eliminar_punto" class="btn btn-danger ms-2" onclick="return confirm('¿Estás seguro de eliminar este punto?');" <?php echo !isset($_POST['punto']) || !$_POST['punto'] ? 'disabled' : ''; ?>>Eliminar punto</button>
+            </div>
         </div>
         <?php
         $residuosMarcados = [];

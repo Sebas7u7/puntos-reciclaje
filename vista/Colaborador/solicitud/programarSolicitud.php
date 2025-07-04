@@ -18,8 +18,10 @@ if ($fechaProgramada) {
     $estado = "programado";
 }
 
+
+$descripcion_proceso = isset($_POST['descripcion_proceso']) ? trim($_POST['descripcion_proceso']) : null;
 $solicitud = new Solicitud();
-$solicitud->actualizar($id,$fechaProgramada,$estado);
+$solicitud->actualizar($id, $fechaProgramada, $estado, $descripcion_proceso);
 
 // Redirigir de vuelta a la tabla de solicitudes para ver los cambios
 header("Location: verSolicitudes.php");

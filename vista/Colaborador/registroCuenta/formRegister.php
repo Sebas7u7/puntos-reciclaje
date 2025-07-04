@@ -44,10 +44,16 @@
                     placeholder="Nombre del colaborador" required style="background-color: #f7fff0;">
             </div>
 
+
             <div class="mb-3">
                 <label class="form-label fw-semibold text-success" for="colabServicio">Servicio Ofrecido</label>
                 <input type="text" id="colabServicio" name="servicio_ofrecido" class="form-control border-success"
                     placeholder="Ej: Recolección, Centro de Acopio" required style="background-color: #f7fff0;">
+            </div>
+
+            <div class="mb-3 form-check">
+                <input type="checkbox" class="form-check-input" id="servicio_domicilio" name="servicio_domicilio" value="1">
+                <label class="form-check-label" for="servicio_domicilio">¿Ofrece servicio a domicilio?</label>
             </div>
 
             <div class="d-grid mt-4">

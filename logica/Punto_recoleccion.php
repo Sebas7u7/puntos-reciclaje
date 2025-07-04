@@ -1,6 +1,3 @@
-
-
-
 <?php
 require_once (__DIR__ . '/../persistencia/Conexion.php');
 require_once (__DIR__ . '/../persistencia/Punto_recoleccionDAO.php');
@@ -115,6 +112,36 @@ class Punto_recoleccion {
         }
         $conexion->cerrarConexion();
         return $puntos;
+    }
+
+    public function listarPorColaborador($idColaborador) {
+        $colaborador = new Colaborador();
+        $colaboradores = $colaborador->mapearPorId();
+        $puntos = array();
+        $conexion = new Conexion();
+        $conexion->abrirConexion();
+        $puntoDAO = new Punto_recoleccionDAO();
+        $conexion->ejecutarConsulta("SELECT * FROM punto_recoleccion WHERE Colaborador_idColaborador = $idColaborador");
+        while ($registro = $conexion->siguienteRegistro()) {
+            $punto = new Punto_recoleccion(
+                $registro[0], $registro[1], $registro[2], $registro[3],
+                $registro[4], $registro[5], $colaboradores[$registro[6]]
+            );
+            array_push($puntos, $punto);
+        }
+        $conexion->cerrarConexion();
+        return $puntos;
+    }
+
+    public function eliminar($idPunto_Recoleccion) {
+        $conexion = new Conexion();
+        $conexion->abrirConexion();
+        // Eliminar primero los residuos asociados a este punto
+        $conexion->ejecutarConsultaDirecta("DELETE FROM punto_residuo WHERE Punto_Recoleccion_idPunto_Recoleccion = $idPunto_Recoleccion");
+        // Ahora sí eliminar el punto
+        $conexion->ejecutarConsultaDirecta("DELETE FROM punto_recoleccion WHERE idPunto_Recoleccion = $idPunto_Recoleccion");
+        $conexion->cerrarConexion();
+        return true;
     }
 
     // Getter & Setter for idPunto_Recoleccion

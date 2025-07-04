@@ -1,3 +1,4 @@
+
 <?php
 require_once (__DIR__ . '/../persistencia/Conexion.php');
 require_once (__DIR__ . '/../persistencia/SolicitudDAO.php');
@@ -15,6 +16,7 @@ class Solicitud{
     private $colaborador;
     private $cantidad;
     private $comentarios;
+    private $descripcion_proceso;
 
     public function __construct(
         $id = null,
@@ -26,7 +28,8 @@ class Solicitud{
         $residuo = null,
         $colaborador = null,
         $cantidad = null,
-        $comentarios = ""
+        $comentarios = "",
+        $descripcion_proceso = ""
     ) {
         $this->id = $id;
         $this->direccion = $direccion;
@@ -38,6 +41,7 @@ class Solicitud{
         $this->colaborador = $colaborador;
         $this->cantidad = $cantidad;
         $this->comentarios = $comentarios;
+        $this->descripcion_proceso = $descripcion_proceso;
     }
     public function listar($idColaborador){
         $solicitudes = array();
@@ -66,6 +70,7 @@ class Solicitud{
                     $conexion->ejecutarConsulta($updateSQL);
                 }
             }
+            $descripcion_proceso = isset($registro[10]) ? $registro[10] : "";
             $solicitud = new Solicitud(
                 $registro[0], // id
                 $registro[1], // direccion
@@ -76,12 +81,57 @@ class Solicitud{
                 $residuoObj, // residuo
                 $colaboradorObj, // colaborador
                 $registro[8], // cantidad
-                $registro[9]  // comentarios
+                $registro[9],  // comentarios
+                $descripcion_proceso // descripcion_proceso
             );
             array_push($solicitudes, $solicitud);
         }
         $conexion -> cerrarConexion();
         return $solicitudes;
+    }
+        public function listarPorUsuario($idUsuario){
+        $solicitudes = array();
+        $usuario = new Usuario();
+        $usuarios = $usuario -> mapearPorId();
+        $colaborador = new Colaborador();
+        $colaboradores = $colaborador -> mapearPorId();
+        $residuo = new Residuo;
+        $residuos = $residuo -> mapearPorId();
+        $conexion = new Conexion();
+        $conexion -> abrirConexion();
+        $solicitudDAO = new SolicitudDAO();
+        $conexion -> ejecutarConsulta($solicitudDAO -> listarPorUsuario($idUsuario));
+        while($registro = $conexion -> siguienteRegistro()){
+            $usuarioObj = isset($usuarios[$registro[5]]) ? $usuarios[$registro[5]] : new Usuario($registro[5], 'Usuario eliminado', '', '', '', '', '', null);
+            $residuoObj = isset($residuos[$registro[6]]) ? $residuos[$registro[6]] : new Residuo($registro[6], 'Residuo eliminado', '', '');
+            $colaboradorObj = isset($colaboradores[$registro[7]]) ? $colaboradores[$registro[7]] : new Colaborador($registro[7], 'Colaborador eliminado');
+            $estado = $registro[4];
+            $descripcion_proceso = isset($registro[10]) ? $registro[10] : "";
+            $solicitud = new Solicitud(
+                $registro[0], // id
+                $registro[1], // direccion
+                $registro[2], // fecha_solicitud
+                $registro[3], // fecha_programada
+                $estado, // estado
+                $usuarioObj, // usuario
+                $residuoObj, // residuo
+                $colaboradorObj, // colaborador
+                $registro[8], // cantidad
+                $registro[9],  // comentarios
+                $descripcion_proceso // descripcion_proceso
+            );
+            array_push($solicitudes, $solicitud);
+        }
+        $conexion -> cerrarConexion();
+        return $solicitudes;
+    }
+
+    // Getter & Setter for descripcion_proceso
+    public function getDescripcionProceso() {
+        return $this->descripcion_proceso;
+    }
+    public function setDescripcionProceso($descripcion_proceso) {
+        $this->descripcion_proceso = $descripcion_proceso;
     }
     // Getter & Setter for cantidad
     public function getCantidad() {
@@ -98,11 +148,11 @@ class Solicitud{
     public function setComentarios($comentarios) {
         $this->comentarios = $comentarios;
     }
-    public function actualizar($id,$fechaProgramada,$estado){
+    public function actualizar($id, $fechaProgramada, $estado, $descripcion_proceso = null){
         $conexion = new Conexion();
         $conexion -> abrirConexion();
         $solicitudDAO = new SolicitudDAO();
-        $conexion -> ejecutarConsulta($solicitudDAO -> actualizar($id,$fechaProgramada,$estado));
+        $conexion -> ejecutarConsulta($solicitudDAO -> actualizar($id, $fechaProgramada, $estado, $descripcion_proceso));
         $conexion -> cerrarConexion();
     }
     // Getter & Setter for id

@@ -13,11 +13,11 @@ $cuenta = new Cuenta();
 
 $correo = $_SESSION["email_pending"];
 
-// 3. 이메일 링크 생성
-$host = $_SERVER['HTTP_HOST']; // 자동 감지
+
+$host = $_SERVER['HTTP_HOST']; 
 $link = "http://$host/puntos-reciclaje/vista/activacionCuenta/activarCuenta.php?cuenta=" . $_SESSION["email_pending"];
 
-// 4. 메일 보내기
+
 $mail = new PHPMailer(true);
 try {
     $mail->isSMTP();
