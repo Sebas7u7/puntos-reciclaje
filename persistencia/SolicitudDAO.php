@@ -16,23 +16,7 @@ class SolicitudDAO {
      * @param string $comentarios
      * @return bool
      */
-    public function crearSolicitudPuertaAPuerta($conexion, $idUsuario, $idColaborador, $tipoResiduo, $direccion, $fecha, $hora, $cantidad, $comentarios) {
-        // Buscar idResiduo por nombre
-        $sqlResiduo = "SELECT idResiduo FROM residuo WHERE nombre = ? LIMIT 1";
-        $stmtResiduo = $conexion->prepararConsulta($sqlResiduo);
-        $idResiduo = null;
-        if ($stmtResiduo) {
-            $stmtResiduo->bind_param("s", $tipoResiduo);
-            if ($stmtResiduo->execute()) {
-                $res = $stmtResiduo->get_result();
-                if ($row = $res->fetch_assoc()) {
-                    $idResiduo = $row['idResiduo'];
-                }
-            }
-            $stmtResiduo->close();
-        }
-        if (!$idResiduo) return false;
-
+    public function crearSolicitudPuertaAPuerta($conexion, $idUsuario, $idColaborador, $idResiduo, $direccion, $fecha, $hora, $cantidad, $comentarios) {
         $sql = "INSERT INTO solicitud_recoleccion (direccion, fecha_solicitud, fecha_programada, estado, Usuario_idUsuario, Residuo_idResiduo, Colaborador_idColaborador, cantidad, comentarios) VALUES (?, ?, CONCAT(?, ' ', ?), 'pendiente', ?, ?, ?, ?, ?)";
         $stmt = $conexion->prepararConsulta($sql);
         if (!$stmt) return false;
@@ -55,8 +39,8 @@ class SolicitudDAO {
         ";
     }
 
-    public function listar($idColaborador) {
-        return "SELECT 
+    public function listar($idColaborador = null) {
+        $sql = "SELECT 
                 s.idSolicitud_Recoleccion,
                 s.direccion,
                 s.fecha_solicitud,
@@ -64,11 +48,16 @@ class SolicitudDAO {
                 s.estado,
                 s.Usuario_idUsuario,
                 s.Residuo_idResiduo,
-                s.Colaborador_idColaborador
+                s.Colaborador_idColaborador,
+                s.cantidad,
+                s.comentarios
             FROM 
-                Solicitud_Recoleccion s
-            WHERE 
-                s.Colaborador_idColaborador = $idColaborador;";
+                Solicitud_Recoleccion s";
+        if ($idColaborador !== null) {
+            $sql .= " WHERE s.Colaborador_idColaborador = " . intval($idColaborador);
+        }
+        $sql .= ";";
+        return $sql;
     }
 }
 ?>

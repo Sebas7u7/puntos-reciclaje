@@ -3,7 +3,9 @@ require_once(__DIR__ . '/../../logica/Usuario.php');
 require_once(__DIR__ . '/../../logica/Residuo.php');
 require_once(__DIR__ . '/../../logica/Colaborador.php');
 require_once(__DIR__ . '/../../logica/Punto_recoleccion.php');
-session_start();
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
 header("Cache-Control: no-store, no-cache, must-revalidate, max-age=0");
 header("Cache-Control: post-check=0, pre-check=0", false);
 header("Pragma: no-cache");

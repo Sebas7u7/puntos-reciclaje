@@ -15,6 +15,22 @@ if (!isset($_SESSION["usuario"])) {
 }
 $usuario = $_SESSION["usuario"];
 
+// Refrescar datos del usuario desde la base de datos antes de mostrar el formulario
+$conexion = new Conexion();
+$conexion->abrirConexion();
+$usuarioDAO = new UsuarioDAO();
+$datos_actualizados = $usuarioDAO->consultarPorId($conexion, $usuario->getIdUsuario());
+$conexion->cerrarConexion();
+if ($datos_actualizados) {
+    if (isset($datos_actualizados['nombre'])) $usuario->setNombre($datos_actualizados['nombre']);
+    if (isset($datos_actualizados['apellido'])) $usuario->setApellido($datos_actualizados['apellido']);
+    if (isset($datos_actualizados['telefono'])) $usuario->setTelefono($datos_actualizados['telefono']);
+    if (isset($datos_actualizados['direccion'])) $usuario->setDireccion($datos_actualizados['direccion']);
+    if (isset($datos_actualizados['nickname'])) $usuario->setNickname($datos_actualizados['nickname']);
+    if (isset($datos_actualizados['foto_perfil'])) $usuario->setFotoPerfil($datos_actualizados['foto_perfil']);
+    $_SESSION["usuario"] = $usuario;
+}
+
 $mensaje = "";
 $tipo_mensaje = "";
 
@@ -22,13 +38,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['actualizar_usuario'])
     $nuevo_nombre = trim($_POST['nombre']);
     $nuevo_apellido = trim($_POST['apellido']);
     $nuevo_telefono = trim($_POST['telefono']);
+    $nueva_direccion = trim($_POST['direccion']);
     $nuevo_nickname = trim($_POST['nickname']);
     $foto_perfil = $usuario->getFotoPerfil(); // Valor por defecto
     $foto_subida = false;
 
     // Validaciones
-    if (empty($nuevo_nombre) || empty($nuevo_apellido) || empty($nuevo_telefono) || empty($nuevo_nickname)) {
-        $mensaje = "Todos los campos (nombre, apellido, teléfono, nickname) son obligatorios.";
+    if (empty($nuevo_nombre) || empty($nuevo_apellido) || empty($nuevo_telefono) || empty($nueva_direccion) || empty($nuevo_nickname)) {
+        $mensaje = "Todos los campos (nombre, apellido, teléfono, dirección, nickname) son obligatorios.";
         $tipo_mensaje = "danger";
     } elseif (!preg_match('/^[0-9]{7,15}$/', $nuevo_telefono)) {
         $mensaje = "El teléfono debe contener solo números (7-15 dígitos).";
@@ -71,13 +88,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['actualizar_usuario'])
             $conexion = new Conexion();
             $conexion->abrirConexion();
             $usuarioDAO = new UsuarioDAO();
-            $exito = $usuarioDAO->actualizarDatosCompletos($conexion, $usuario->getIdUsuario(), $nuevo_nombre, $nuevo_apellido, $nuevo_telefono, $nuevo_nickname, $foto_perfil);
+            $exito = $usuarioDAO->actualizarDatosCompletos($conexion, $usuario->getIdUsuario(), $nuevo_nombre, $nuevo_apellido, $nuevo_telefono, $nueva_direccion, $nuevo_nickname, $foto_perfil);
             $conexion->cerrarConexion();
             if ($exito) {
                 // Actualizar objeto y sesión
                 $usuario->setNombre($nuevo_nombre);
                 $usuario->setApellido($nuevo_apellido);
                 $usuario->setTelefono($nuevo_telefono);
+                $usuario->setDireccion($nueva_direccion);
                 $usuario->setNickname($nuevo_nickname);
                 $usuario->setFotoPerfil($foto_perfil);
                 $_SESSION["usuario"] = $usuario;
@@ -222,6 +240,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['actualizar_usuario'])
                         <div class="mb-3">
                             <label for="telefono" class="form-label">Teléfono:</label>
                             <input type="text" class="form-control" id="telefono" name="telefono" value="<?php echo htmlspecialchars($usuario->getTelefono()); ?>" required pattern="[0-9]{7,15}" title="Solo números, 7-15 dígitos">
+                        </div>
+                        <div class="mb-3">
+                            <label for="direccion" class="form-label">Dirección:</label>
+                            <input type="text" class="form-control" id="direccion" name="direccion" value="<?php echo htmlspecialchars($usuario->getDireccion()); ?>" required placeholder="Ej: Calle 123 #45-67, Barrio ...">
                         </div>
                         <div class="mb-3">
                             <label for="nickname" class="form-label">Nickname:</label>

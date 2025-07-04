@@ -1,3 +1,4 @@
+
 <?php
 
 class ColaboradorDAO{
@@ -197,6 +198,27 @@ class ColaboradorDAO{
             }
         }
         return true;
+    }
+        // Buscar colaborador por ID
+    public function buscarPorId($idColaborador) {
+        require_once(__DIR__ . '/Conexion.php');
+        $conexion = new Conexion();
+        $conexion->abrirConexion();
+        $sql = "SELECT * FROM Colaborador WHERE idColaborador = ? LIMIT 1";
+        $stmt = $conexion->prepararConsulta($sql);
+        $colaborador = null;
+        if ($stmt) {
+            $stmt->bind_param("i", $idColaborador);
+            if ($stmt->execute()) {
+                $res = $stmt->get_result();
+                if ($row = $res->fetch_assoc()) {
+                    $colaborador = $row;
+                }
+            }
+            $stmt->close();
+        }
+        $conexion->cerrarConexion();
+        return $colaborador;
     }
 }
 ?>

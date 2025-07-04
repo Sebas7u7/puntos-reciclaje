@@ -13,6 +13,9 @@ class Solicitud{
     private $usuario;
     private $residuo;
     private $colaborador;
+    private $cantidad;
+    private $comentarios;
+
     public function __construct(
         $id = null,
         $direccion = "",
@@ -21,7 +24,9 @@ class Solicitud{
         $estado = "",
         $usuario = null,
         $residuo = null,
-        $colaborador = null
+        $colaborador = null,
+        $cantidad = null,
+        $comentarios = ""
     ) {
         $this->id = $id;
         $this->direccion = $direccion;
@@ -31,6 +36,8 @@ class Solicitud{
         $this->usuario = $usuario;
         $this->residuo = $residuo;
         $this->colaborador = $colaborador;
+        $this->cantidad = $cantidad;
+        $this->comentarios = $comentarios;
     }
     public function listar($idColaborador){
         $solicitudes = array();
@@ -44,14 +51,52 @@ class Solicitud{
         $conexion -> abrirConexion();
         $solicitudDAO = new SolicitudDAO();
         $conexion -> ejecutarConsulta($solicitudDAO -> listar($idColaborador));
-        while($registro = $conexion -> siguienteRegistro()){            
-            $solicitud = new Solicitud($registro[0], $registro[1],$registro[2]
-            ,$registro[3],$registro[4],$usuarios[$registro[5]],$residuos[$registro[6]]
-            ,$colaboradores[$registro[7]]);
+        while($registro = $conexion -> siguienteRegistro()){
+            $usuarioObj = isset($usuarios[$registro[5]]) ? $usuarios[$registro[5]] : new Usuario($registro[5], 'Usuario eliminado', '', '', '', '', '', null);
+            $residuoObj = isset($residuos[$registro[6]]) ? $residuos[$registro[6]] : new Residuo($registro[6], 'Residuo eliminado', '', '');
+            $colaboradorObj = isset($colaboradores[$registro[7]]) ? $colaboradores[$registro[7]] : new Colaborador($registro[7], 'Colaborador eliminado');
+            $estado = $registro[4];
+            // Si la fecha programada ya pasó y el estado es programado, marcar como completado
+            if ($registro[3] && $estado === 'programado') {
+                $ahora = date('Y-m-d H:i:s');
+                if ($registro[3] <= $ahora) {
+                    $estado = 'completado';
+                    // Actualizar en base de datos
+                    $updateSQL = $solicitudDAO->actualizar($registro[0], $registro[3], $estado);
+                    $conexion->ejecutarConsulta($updateSQL);
+                }
+            }
+            $solicitud = new Solicitud(
+                $registro[0], // id
+                $registro[1], // direccion
+                $registro[2], // fecha_solicitud
+                $registro[3], // fecha_programada
+                $estado, // estado
+                $usuarioObj, // usuario
+                $residuoObj, // residuo
+                $colaboradorObj, // colaborador
+                $registro[8], // cantidad
+                $registro[9]  // comentarios
+            );
             array_push($solicitudes, $solicitud);
         }
         $conexion -> cerrarConexion();
-        return $solicitudes;        
+        return $solicitudes;
+    }
+    // Getter & Setter for cantidad
+    public function getCantidad() {
+        return $this->cantidad;
+    }
+    public function setCantidad($cantidad) {
+        $this->cantidad = $cantidad;
+    }
+
+    // Getter & Setter for comentarios
+    public function getComentarios() {
+        return $this->comentarios;
+    }
+    public function setComentarios($comentarios) {
+        $this->comentarios = $comentarios;
     }
     public function actualizar($id,$fechaProgramada,$estado){
         $conexion = new Conexion();

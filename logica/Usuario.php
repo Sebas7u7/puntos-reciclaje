@@ -9,15 +9,17 @@ class Usuario{
     private $apellido;
     private $cuenta; // Objeto Cuenta
     private $telefono;
+    private $direccion;
     private $nickname;
     private $foto_perfil;
 
-    public function __construct($idUsuario=0, $nombre="", $apellido="", $telefono="", $nickname="", $foto_perfil="",$cuenta=null){
+    public function __construct($idUsuario=0, $nombre="", $apellido="", $telefono="", $direccion="", $nickname="", $foto_perfil="",$cuenta=null){
         $this->idUsuario = $idUsuario;
         $this->nombre = $nombre;
         $this->apellido = $apellido;
         $this->cuenta = $cuenta;
         $this->telefono = $telefono;
+        $this->direccion = $direccion;
         $this->nickname = $nickname;
         $this->foto_perfil = $foto_perfil;
     }
@@ -30,7 +32,7 @@ class Usuario{
         $usuarioDAO = new UsuarioDAO();
         $conexion -> ejecutarConsulta($usuarioDAO -> consultarTodos());
         while($registro = $conexion -> siguienteRegistro()){            
-            $usuario = new Usuario($registro[0], $registro[1],$registro[2],$registro[3],$registro[4],$registro[5],$cuentas[$registro[6]]);
+            $usuario = new Usuario($registro[0], $registro[1], $registro[2], $registro[3], $registro[4], $registro[5], $cuentas[$registro[6]]);
             $usuarios[$registro[0]] = $usuario;
         }
         $conexion -> cerrarConexion();
@@ -59,6 +61,10 @@ class Usuario{
         $this->idUsuario = $datosUsuario['idUsuario'];
         $this->nombre = $datosUsuario['nombre'];
         $this->apellido = $datosUsuario['apellido'];
+        $this->telefono = isset($datosUsuario['telefono']) ? $datosUsuario['telefono'] : null;
+        $this->direccion = isset($datosUsuario['direccion']) ? $datosUsuario['direccion'] : null;
+        $this->nickname = isset($datosUsuario['nickname']) ? $datosUsuario['nickname'] : null;
+        $this->foto_perfil = isset($datosUsuario['foto_perfil']) ? $datosUsuario['foto_perfil'] : null;
         $this->cuenta = $cuentaObject; // Asigna el objeto Cuenta completo
         return true;
     }
@@ -142,6 +148,8 @@ class Usuario{
     public function setCuenta(Cuenta $cuenta){ $this->cuenta = $cuenta; } // Acepta un objeto Cuenta
     public function getTelefono() { return $this->telefono; }
     public function setTelefono($telefono) { $this->telefono = $telefono; }
+    public function getDireccion() { return $this->direccion; }
+    public function setDireccion($direccion) { $this->direccion = $direccion; }
     public function getNickname() { return $this->nickname; }
     public function setNickname($nickname) { $this->nickname = $nickname; }
     public function getFotoPerfil() { return $this->foto_perfil; }

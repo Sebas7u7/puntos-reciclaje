@@ -1,3 +1,4 @@
+
 <?php
 require_once (__DIR__ . '/../persistencia/Conexion.php');
 require_once (__DIR__ . '/../persistencia/ResiduoDAO.php');
@@ -51,11 +52,12 @@ class Residuo {
         $conexion -> abrirConexion();
         $residuoDAO = new ResiduoDAO;
         $conexion -> ejecutarConsulta($residuoDAO -> clasificar_nombre($nombre));
-        $registro = $conexion -> siguienteRegistro();          
-        $residuo = new Residuo($registro[0], $registro[1],$registro[2],$registro[3]);
-
+        $registro = $conexion -> siguienteRegistro();
         $conexion -> cerrarConexion();
-        return $residuo;
+        if ($registro === null) {
+            return null;
+        }
+        return new Residuo($registro[0], $registro[1],$registro[2],$registro[3]);
     }
     public function mapearPorId(){
         $residuos = [];
@@ -69,6 +71,22 @@ class Residuo {
         }
         $conexion -> cerrarConexion();
         return $residuos;   
+    }
+        // Buscar residuo por ID
+    public function buscarPorId($id) {
+        $conexion = new Conexion();
+        $conexion->abrirConexion();
+        $residuoDAO = new ResiduoDAO;
+        $conexion->ejecutarConsulta($residuoDAO->consultarTodos());
+        while ($registro = $conexion->siguienteRegistro()) {
+            if ($registro[0] == $id) {
+                $residuo = new Residuo($registro[0], $registro[1], $registro[2], $registro[3]);
+                $conexion->cerrarConexion();
+                return $residuo;
+            }
+        }
+        $conexion->cerrarConexion();
+        return null;
     }
     // Getter y Setter para id
     public function getId() {

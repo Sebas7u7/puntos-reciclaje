@@ -74,11 +74,18 @@
         <hr class="mb-4">
     </div>
     
-    <div class="container-fluid px-3 px-md-4 px-lg-5">  <!-- Contenedor fluido que ocupa todo el ancho -->
+    <div class="container-fluid px-3 px-md-4 px-lg-5">
     <div class="row justify-content-center">
-        <div class="col-12">  <!-- Columna que ocupa todo el ancho disponible -->
-            <div class="data-container p-3 p-md-4">  <!-- Padding responsive -->
-                <div class="table-responsive-xxl rounded-3 shadow-sm">  <!-- Tabla ultra responsive -->
+        <div class="col-12">
+            <div class="data-container p-3 p-md-4">
+                <?php if (isset($_SESSION['error_programar'])): ?>
+                    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                        <?= htmlspecialchars($_SESSION['error_programar']) ?>
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                    <?php unset($_SESSION['error_programar']); ?>
+                <?php endif; ?>
+                <div class="table-responsive-xxl rounded-3 shadow-sm">
                     <?php
                     $solicitud = new Solicitud();
                     $solicitudes = $solicitud->listar($_SESSION["colaborador"]->getIdColaborador());

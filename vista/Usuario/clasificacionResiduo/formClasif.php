@@ -5,10 +5,19 @@
                 <h2 class="text-center">Clasificar residuos</h2>
 <?php
 $residuo = new Residuo();
-
+$mensajeError = '';
 if (isset($_POST['clasificar_residuo'])) {
-    $residuoC = $residuo->clasificar_nombre($_POST["nombreR"]);
-    include("tablaResiduos.php");
+    $nombreR = isset($_POST["nombreR"]) ? trim($_POST["nombreR"]) : '';
+    if ($nombreR === '') {
+        $mensajeError = '<div class="alert alert-danger">Debe ingresar un nombre para buscar.</div>';
+    } else {
+        $residuoC = $residuo->clasificar_nombre($nombreR);
+        if (!$residuoC) {
+            $mensajeError = '<div class="alert alert-warning">No existe un residuo con ese nombre. Intente nuevamente.</div>';
+        } else {
+            include("tablaResiduos.php");
+        }
+    }
 }
 $residuos = $residuo->listar();
 ?>
@@ -68,7 +77,7 @@ $residuos = $residuo->listar();
     }
 </style>
 
-                <form method="POST" action="<?= htmlspecialchars($_SERVER['PHP_SELF']) ?>" enctype="multipart/form-data">
+                <form method="POST" action="<?= htmlspecialchars($_SERVER['PHP_SELF']) ?>" enctype="multipart/form-data" onsubmit="return validarBusqueda()">
                     <div class="mb-3">
                         <label class="form-label">Buscar por nombre exacto</label>
                         <input type="text" id="nombreR" name="nombreR" class="form-control" list="nombreR_list" placeholder="Escriba el nombre del residuo..." autocomplete="off">
@@ -78,13 +87,23 @@ $residuos = $residuo->listar();
                             <?php endforeach; ?>
                         </datalist>
                     </div>
-                    <!-- Eliminado el filtro por categoría para evitar errores -->
-
+                    <?php if (!empty($mensajeError)) echo $mensajeError; ?>
                     <div class="d-grid gap-2 mt-4">
                         <button type="submit" name="clasificar_residuo"
                             class="btn btn-info btn-lg">Clasificar</button>
                     </div>
                 </form>
+                <script>
+                function validarBusqueda() {
+                    var nombre = document.getElementById('nombreR').value.trim();
+                    if (nombre === '') {
+                        alert('Debe ingresar un nombre para buscar.');
+                        document.getElementById('nombreR').focus();
+                        return false;
+                    }
+                    return true;
+                }
+                </script>
             </div>
         </div>
     </div>

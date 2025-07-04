@@ -7,6 +7,8 @@
                 <th class="align-middle text-nowrap">Fecha Solicitud</th>
                 <th class="align-middle text-nowrap">Usuario</th>
                 <th class="align-middle text-nowrap">Residuo</th>
+                <th class="align-middle text-nowrap">Cantidad</th>
+                <th class="align-middle text-nowrap">Comentarios</th>
                 <th class="align-middle text-nowrap">Fecha Programada</th>
                 <th class="align-middle text-nowrap">Estado</th>
                 <th class="align-middle text-nowrap">Acción</th>
@@ -14,59 +16,71 @@
         </thead>
         <tbody>
             <?php foreach($solicitudes as $solicitud): ?>
-            <form method="POST" action="programarSolicitud.php">
-                <tr>
-                    <td class="align-middle text-nowrap">
-                        <?= htmlspecialchars($solicitud->getId()) ?>
+            <tr>
+                <td class="align-middle text-nowrap">
+                    <?= htmlspecialchars($solicitud->getId()) ?>
+                </td>
+                <td class="align-middle">
+                    <div style="max-width: 200px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
+                        <?= htmlspecialchars($solicitud->getDireccion()) ?>
+                    </div>
+                </td>
+                <td class="align-middle text-nowrap">
+                    <?= htmlspecialchars($solicitud->getFechaSolicitud()) ?>
+                </td>
+                <td class="align-middle">
+                    <div style="max-width: 150px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
+                        <?= htmlspecialchars($solicitud->getUsuario() ? $solicitud->getUsuario()->getNombre() : 'Usuario eliminado') ?>
+                    </div>
+                </td>
+                <td class="align-middle text-nowrap">
+                    <?= htmlspecialchars($solicitud->getResiduo() ? $solicitud->getResiduo()->getNombre() : 'Residuo eliminado') ?>
+                </td>
+                <td class="align-middle text-nowrap">
+                    <?= htmlspecialchars($solicitud->getCantidad()) ?>
+                </td>
+                <td class="align-middle">
+                    <div style="max-width: 200px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
+                        <?= htmlspecialchars($solicitud->getComentarios()) ?>
+                    </div>
+                </td>
+                <td class="align-middle text-nowrap">
+                    <form method="POST" action="programarSolicitud.php" style="display:inline;" onsubmit="return validarFechaProgramada(this)">
                         <input type="hidden" name="id" value="<?= htmlspecialchars($solicitud->getId()) ?>">
-                    </td>
-                    <td class="align-middle">
-                        <div style="max-width: 200px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
-                            <?= htmlspecialchars($solicitud->getDireccion()) ?>
-                            <input type="hidden" name="direccion" value="<?= htmlspecialchars($solicitud->getDireccion()) ?>">
-                        </div>
-                    </td>
-                    <td class="align-middle text-nowrap">
-                        <?= htmlspecialchars($solicitud->getFechaSolicitud()) ?>
-                        <input type="hidden" name="fecha_solicitud" value="<?= htmlspecialchars($solicitud->getFechaSolicitud()) ?>">
-                    </td>
-                    <td class="align-middle">
-                        <div style="max-width: 150px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
-                            <?= htmlspecialchars($solicitud->getUsuario()->getNombre()) ?>
-                            <input type="hidden" name="usuario_id" value="<?= htmlspecialchars($solicitud->getUsuario()->getIdUsuario()) ?>">
-                        </div>
-                    </td>
-                    <td class="align-middle text-nowrap">
-                        <?= htmlspecialchars($solicitud->getResiduo()->getNombre()) ?>
-                        <input type="hidden" name="residuo_id" value="<?= htmlspecialchars($solicitud->getResiduo()->getId()) ?>">
-                    </td>
-                    <td class="align-middle text-nowrap">
-                        <input type="datetime-local" 
-                               class="form-control form-control-sm" 
-                               name="fecha_programada" 
-                               value="<?= $solicitud->getFechaProgramada() ? htmlspecialchars(date('Y-m-d\TH:i', strtotime($solicitud->getFechaProgramada()))) : '' ?>" 
-                               min="<?= htmlspecialchars(date('Y-m-d\TH:i')) ?>"
-                               style="min-width: 180px;">
-                    </td>
-                    <td class="align-middle text-nowrap">
-                        <span class="badge 
-                            <?= $solicitud->getEstado() == 'pendiente' ? 'bg-warning text-dark' : 
-                               ($solicitud->getEstado() == 'programado' ? 'bg-info text-dark' : 
-                               ($solicitud->getEstado() == 'completado' ? 'bg-success' : 'bg-secondary')) ?>">
-                            <?= htmlspecialchars($solicitud->getEstado()) ?>
-                        </span>
-                        <input type="hidden" name="estado" value="<?= htmlspecialchars($solicitud->getEstado()) ?>">
-                    </td>
-                    <td class="align-middle text-nowrap">
-                        <input type="hidden" name="correoUsuario" value="<?= htmlspecialchars($solicitud->getUsuario()->getCuenta()->getCorreo()) ?>">
-                        <input type="hidden" name="colaborador_id" value="<?= htmlspecialchars($solicitud->getColaborador()->getIdColaborador()) ?>">
+                        <input type="datetime-local" name="fecha_programada" class="form-control form-control-sm" value="<?= $solicitud->getFechaProgramada() ? htmlspecialchars(date('Y-m-d\TH:i', strtotime($solicitud->getFechaProgramada()))) : '' ?>" required min="<?= date('Y-m-d\TH:i') ?>">
+                </td>
+                <td class="align-middle text-nowrap">
+                    <span class="badge 
+                        <?= $solicitud->getEstado() == 'pendiente' ? 'bg-warning text-dark' : 
+                           ($solicitud->getEstado() == 'programado' ? 'bg-info text-dark' : 
+                           ($solicitud->getEstado() == 'completado' ? 'bg-success' : 'bg-secondary')) ?>">
+                        <?= htmlspecialchars($solicitud->getEstado()) ?>
+                    </span>
+                </td>
+                <td class="align-middle text-nowrap">
                         <button type="submit" class="btn btn-sm btn-custom">
                             <i class="bi bi-calendar-check"></i> <span class="d-none d-md-inline">Programar</span>
                         </button>
-                    </td>
-                </tr>
-            </form>
+                    </form>
+                </td>
+            </tr>
             <?php endforeach; ?>
         </tbody>
     </table>
 </div>
+<script>
+function validarFechaProgramada(form) {
+    const input = form.querySelector('input[name="fecha_programada"]');
+    if (!input.value) {
+        alert('Debe ingresar una fecha y hora.');
+        return false;
+    }
+    const fechaIngresada = new Date(input.value);
+    const ahora = new Date();
+    if (fechaIngresada <= ahora) {
+        alert('La fecha y hora programada deben ser posteriores a la fecha y hora actual.');
+        return false;
+    }
+    return true;
+}
+</script>

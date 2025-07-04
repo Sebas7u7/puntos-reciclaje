@@ -14,7 +14,15 @@ $colaboradores = [];
 $residuoSeleccionado = isset($_POST['tipo_residuo']) ? $_POST['tipo_residuo'] : '';
 if ($residuoSeleccionado) {
     $colaboradorDAO = new ColaboradorDAO();
-    $colaboradores = $colaboradorDAO->buscarPorResiduo($residuoSeleccionado);
+    // Buscar el nombre del residuo por ID
+    $residuoNombre = '';
+    foreach ($residuos as $res) {
+        if ($res->getId() == $residuoSeleccionado) {
+            $residuoNombre = $res->getNombre();
+            break;
+        }
+    }
+    $colaboradores = $colaboradorDAO->buscarPorResiduo($residuoNombre);
 }
 
 $feedback = '';
@@ -64,7 +72,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['enviar_solicitud'])) 
             <select class="form-select" id="residuo" name="tipo_residuo" required onchange="this.form.submit()">
                 <option value="">Seleccione un residuo</option>
                 <?php foreach ($residuos as $res): ?>
-                    <option value="<?= htmlspecialchars($res->getNombre()) ?>" <?= $residuoSeleccionado == $res->getNombre() ? 'selected' : '' ?>>
+                    <option value="<?= htmlspecialchars($res->getId()) ?>" <?= $residuoSeleccionado == $res->getId() ? 'selected' : '' ?>>
                         <?= htmlspecialchars($res->getNombre()) ?>
                     </option>
                 <?php endforeach; ?>
@@ -74,7 +82,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['enviar_solicitud'])) 
             <?php if (count($colaboradores) > 0): ?>
                 <div class="mb-3">
                     <label for="colaborador" class="form-label">Empresa recolectora:</label>
-                    <select class="form-select" id="colaborador" name="id_colaborador" required>
+                    <select class="form-select mb-3" id="colaborador" name="colaborador" required>
                         <option value="">Seleccione una empresa</option>
                         <?php foreach ($colaboradores as $col): ?>
                             <option value="<?= htmlspecialchars($col['idColaborador']) ?>">
@@ -82,30 +90,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['enviar_solicitud'])) 
                             </option>
                         <?php endforeach; ?>
                     </select>
+                    <button type="button" class="btn btn-success mt-2" onclick="redirigirFormulario()">Continuar</button>
                 </div>
-                <div>
-                    <div class="mb-3">
-                        <label for="direccion" class="form-label">Dirección de recolección:</label>
-                        <input type="text" class="form-control" id="direccion" name="direccion" value="<?php echo htmlspecialchars($usuario->getDireccion() ?? ''); ?>" required>
-                    </div>
-                    <div class="mb-3">
-                        <label for="fecha" class="form-label">Fecha preferida:</label>
-                        <input type="date" class="form-control" id="fecha" name="fecha" required>
-                    </div>
-                    <div class="mb-3">
-                        <label for="hora" class="form-label">Hora preferida:</label>
-                        <input type="time" class="form-control" id="hora" name="hora" required>
-                    </div>
-                    <div class="mb-3">
-                        <label for="cantidad" class="form-label">Cantidad de residuos:</label>
-                        <input type="number" class="form-control" id="cantidad" name="cantidad" min="1" required>
-                    </div>
-                    <div class="mb-3">
-                        <label for="comentarios" class="form-label">Comentarios adicionales:</label>
-                        <textarea class="form-control" id="comentarios" name="comentarios" rows="2"></textarea>
-                    </div>
-                    <button type="submit" name="enviar_solicitud" class="btn btn-success">Solicitar Recolección</button>
-                </div>
+                <script>
+                function redirigirFormulario() {
+                    var residuo = document.getElementById('residuo').value;
+                    var colaborador = document.getElementById('colaborador').value;
+                    if (!residuo || !colaborador) {
+                        alert('Debe seleccionar un residuo y una empresa.');
+                        return;
+                    }
+                    window.location.href = 'formularioSolicitud.php?residuo=' + encodeURIComponent(residuo) + '&colaborador=' + encodeURIComponent(colaborador);
+                }
+                </script>
             <?php else: ?>
                 <div class="alert alert-warning">No hay empresas colaboradoras que ofrezcan recolección a domicilio para este residuo.</div>
             <?php endif; ?>
